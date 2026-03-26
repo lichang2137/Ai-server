@@ -1,0 +1,49 @@
+{
+  "urls": {
+    "https://www.okx.com/en-us/help": {
+      "doc_id": "okx_https_www_okx_com_en_us_help",
+      "title": "OKX Help Center | Customer service and helpdesk | OKX United States",
+      "content_fingerprint": "be27866b7104b7587641a99297f5dabf8ef10ba3bcef40aa94aa5d02d9e9d587",
+      "last_seen_at": "2026-03-26T16:57:02.196914Z"
+    },
+    "https://www.okx.com/en-us/help/why-has-not-my-deposit-been-credited": {
+      "doc_id": "okx_https_www_okx_com_en_us_help_why_has_not_my_deposit_been_credited",
+      "title": "Why hasn't my deposit been credited? | OKX United States",
+      "content_fingerprint": "e767a56391f762ff74e34394a4876498c0fa7ca659a2d7abeaac6413e336c38c",
+      "last_seen_at": "2026-03-26T16:57:07.724436Z"
+    },
+    "https://www.okx.com/en-us/help/how-do-i-make-a-withdrawal-web": {
+      "doc_id": "okx_https_www_okx_com_en_us_help_how_do_i_make_a_withdrawal_web",
+      "title": "How do I make a withdrawal? (web) | OKX United States",
+      "content_fingerprint": "6307623419ec4f053b197c1c46d0f31d35c646afd57c289fc5d394e01b85510e",
+      "last_seen_at": "2026-03-26T16:57:13.478062Z"
+    },
+    "https://www.okx.com/en-us/help/how-do-i-find-my-deposit-address-and-tag-memos": {
+      "doc_id": "okx_https_www_okx_com_en_us_help_how_do_i_find_my_deposit_address_and_tag_memos",
+      "title": "How do I find my deposit address and tag/memo/comment? | OKX United States",
+      "content_fingerprint": "26fec7ecfb69bb3b73a69b8a25d8165bf0c59c8c73d1654ee43b569a23af673c",
+      "last_seen_at": "2026-03-26T16:57:19.107982Z"
+    },
+    "https://www.okx.com/en-us/help/why-do-i-need-to-fill-in-tags-tagmemo-when-i-withdraw-or-deposit-certain-cryptos": {
+      "doc_id": "okx_https_www_okx_com_en_us_help_why_do_i_need_to_fill_in_tags_tagmemo_when_i_withdr",
+      "title": "Why do I need to fill in tags (tag/memo) when I withdraw or deposit certain cryptos? | OKX United States",
+      "content_fingerprint": "a90c269667c706ab18c9e44a9b3b1406caf59f92fd494d527214eab9bc26d131",
+      "last_seen_at": "2026-03-26T16:57:24.703666Z"
+    },
+    "https://www.okx.com/en-us/help/what-should-i-do-if-i-forget-to-fill-in-tag-memo": {
+      "doc_id": "okx_https_www_okx_com_en_us_help_what_should_i_do_if_i_forget_to_fill_in_tag_memo",
+      "title": "What should I do if I forget to fill in tag/memo? | OKX United States",
+      "content_fingerprint": "4fc7376438fefb1146651eabc316fdf5e7c9292f6fcc5925b417f44f0580c467",
+      "last_seen_at": "2026-03-26T16:57:30.699737Z"
+    },
+    "https://www.okx.com/en-us/help/what-could-be-the-reasons-your-transaction-isnt-visible": {
+      "doc_id": "okx_https_www_okx_com_en_us_help_what_could_be_the_reasons_your_transaction_isnt_vis",
+      "title": "Why is my deposit not credited even when all information is correct? | OKX United States",
+      "content_fingerprint": "ff0817139db34f9473d47ee6481dd81c325ec96252f9fbcfca7fdefa5597e447",
+      "last_seen_at": "2026-03-26T16:57:36.143518Z"
+    }
+  },
+  "fingerprints": {},
+  "updated_at": "2026-03-26T16:57:36.943866Z",
+  "doc_count": 7
+}

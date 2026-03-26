@@ -1,0 +1,53 @@
+{
+  "rule_set": "wallet_rules",
+  "version": "0.1.0",
+  "defaults": {
+    "diagnosis": "Wallet network status needs confirmation.",
+    "next_action": "Try another supported network or check maintenance notice.",
+    "should_escalate": false,
+    "risk_level": "low"
+  },
+  "rules": [
+    {
+      "id": "wallet_normal",
+      "priority": 100,
+      "when": {
+        "maintenance_status": "normal",
+        "deposit_enabled": true,
+        "withdraw_enabled": true
+      },
+      "result": {
+        "diagnosis": "Deposit and withdrawal are available on this network.",
+        "next_action": "You can continue with deposit or withdrawal on this network.",
+        "should_escalate": false,
+        "risk_level": "low"
+      }
+    },
+    {
+      "id": "wallet_withdraw_paused",
+      "priority": 110,
+      "when": {
+        "withdraw_enabled": false
+      },
+      "result": {
+        "diagnosis": "Withdrawal is temporarily unavailable on this network.",
+        "next_action": "Wait for recovery or switch to an available alternative network.",
+        "should_escalate": false,
+        "risk_level": "medium"
+      }
+    },
+    {
+      "id": "wallet_deposit_paused",
+      "priority": 110,
+      "when": {
+        "deposit_enabled": false
+      },
+      "result": {
+        "diagnosis": "Deposit is temporarily unavailable on this network.",
+        "next_action": "Use another network or wait for service recovery.",
+        "should_escalate": false,
+        "risk_level": "medium"
+      }
+    }
+  ]
+}

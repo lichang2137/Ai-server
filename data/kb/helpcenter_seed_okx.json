@@ -1,0 +1,18 @@
+{
+  "version": "2026-03-27",
+  "sources": [
+    {
+      "platform": "okx",
+      "category": "helpcenter",
+      "urls": [
+        "https://www.okx.com/en-us/help",
+        "https://www.okx.com/en-us/help/why-has-not-my-deposit-been-credited",
+        "https://www.okx.com/en-us/help/how-do-i-make-a-withdrawal-web",
+        "https://www.okx.com/en-us/help/how-do-i-find-my-deposit-address-and-tag-memos",
+        "https://www.okx.com/en-us/help/why-do-i-need-to-fill-in-tags-tagmemo-when-i-withdraw-or-deposit-certain-cryptos",
+        "https://www.okx.com/en-us/help/what-should-i-do-if-i-forget-to-fill-in-tag-memo",
+        "https://www.okx.com/en-us/help/what-could-be-the-reasons-your-transaction-isnt-visible"
+      ]
+    }
+  ]
+}

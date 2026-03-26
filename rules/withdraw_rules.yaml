@@ -1,0 +1,78 @@
+{
+  "rule_set": "withdraw_rules",
+  "version": "0.1.0",
+  "defaults": {
+    "diagnosis": "Withdrawal status needs more investigation.",
+    "next_action": "Check order details and on-chain status.",
+    "should_escalate": false,
+    "risk_level": "medium"
+  },
+  "rules": [
+    {
+      "id": "wd_pending",
+      "priority": 100,
+      "when": {
+        "internal_status": "pending"
+      },
+      "result": {
+        "diagnosis": "Withdrawal is waiting for platform processing.",
+        "next_action": "Please wait. If status does not change for an extended period, contact support.",
+        "should_escalate": false,
+        "risk_level": "low"
+      }
+    },
+    {
+      "id": "wd_risk_review",
+      "priority": 110,
+      "when": {
+        "internal_status": "risk_review"
+      },
+      "result": {
+        "diagnosis": "Withdrawal is in risk review.",
+        "next_action": "Wait for review and prepare supporting account ownership materials if requested.",
+        "should_escalate": false,
+        "risk_level": "medium"
+      }
+    },
+    {
+      "id": "wd_broadcasted_confirming",
+      "priority": 90,
+      "when": {
+        "internal_status": "broadcasted",
+        "chain_status": "confirming"
+      },
+      "result": {
+        "diagnosis": "Withdrawal has been broadcast and is still confirming on-chain.",
+        "next_action": "Wait for required confirmations to complete.",
+        "should_escalate": false,
+        "risk_level": "low"
+      }
+    },
+    {
+      "id": "wd_completed",
+      "priority": 95,
+      "when": {
+        "internal_status": "completed"
+      },
+      "result": {
+        "diagnosis": "Withdrawal is completed on platform side.",
+        "next_action": "If destination account still does not show funds, verify receiving platform credit policy with TXID.",
+        "should_escalate": false,
+        "risk_level": "low"
+      }
+    },
+    {
+      "id": "wd_failed",
+      "priority": 120,
+      "when": {
+        "internal_status": "failed"
+      },
+      "result": {
+        "diagnosis": "Withdrawal failed.",
+        "next_action": "Review failure reason and submit a support ticket with order ID if needed.",
+        "should_escalate": true,
+        "risk_level": "high"
+      }
+    }
+  ]
+}

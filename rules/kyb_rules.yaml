@@ -1,0 +1,66 @@
+{
+  "rule_set": "kyb_rules",
+  "version": "0.1.0",
+  "defaults": {
+    "diagnosis": "KYB status requires manual interpretation.",
+    "next_action": "Please review submitted materials and wait for platform review.",
+    "should_escalate": false,
+    "risk_level": "low"
+  },
+  "rules": [
+    {
+      "id": "kyb_approved",
+      "priority": 100,
+      "when": {
+        "current_status": "approved"
+      },
+      "result": {
+        "diagnosis": "KYB has been approved.",
+        "next_action": "No further action needed.",
+        "should_escalate": false,
+        "risk_level": "low"
+      }
+    },
+    {
+      "id": "kyb_material_missing",
+      "priority": 90,
+      "when": {
+        "current_status": "material_missing"
+      },
+      "result": {
+        "diagnosis": "KYB is pending missing documents.",
+        "next_action": "Upload all missing documents and resubmit.",
+        "should_escalate": false,
+        "risk_level": "medium"
+      }
+    },
+    {
+      "id": "kyb_rejected",
+      "priority": 95,
+      "when": {
+        "current_status": "rejected"
+      },
+      "result": {
+        "diagnosis": "KYB was rejected based on document review.",
+        "next_action": "Correct rejected materials and submit a new review request.",
+        "should_escalate": true,
+        "risk_level": "high"
+      }
+    },
+    {
+      "id": "kyb_in_review",
+      "priority": 80,
+      "when": {
+        "current_status": {
+          "in": ["in_review", "pending_review"]
+        }
+      },
+      "result": {
+        "diagnosis": "KYB is currently under review.",
+        "next_action": "Wait for review completion. Prepare documents if follow-up is requested.",
+        "should_escalate": false,
+        "risk_level": "low"
+      }
+    }
+  ]
+}
