@@ -1,0 +1,72 @@
+{
+  "_meta": {
+    "description": "公告 Mock 数据",
+    "is_mock": true,
+    "coverage": "OKX + Binance 近期公告"
+  },
+  "announcements": [
+    {
+      "id": "ann_001",
+      "title": "USDT (TRC20) 网络钱包维护通知",
+      "platform": "okx",
+      "type": "wallet_maintenance",
+      "published_at": "2026-03-25T08:00:00Z",
+      "effective_at": "2026-03-26T08:00:00Z",
+      "recovery_at": "2026-03-26T14:00:00Z",
+      "affected_assets": ["USDT"],
+      "affected_networks": ["TRC20"],
+      "content_summary": "TRC20 网络节点升级，2026-03-26 08:00-14:00 UTC 期间暂停 USDT (TRC20) 充值和提现，预计 6 小时内恢复。ERC20/Arbitrum 不受影响。",
+      "url": "https://www.okx.com/zh-hans/help/section/notice"
+    },
+    {
+      "id": "ann_002",
+      "title": "ATOM 提现功能暂停公告",
+      "platform": "okx",
+      "type": "wallet_maintenance",
+      "published_at": "2026-03-24T10:00:00Z",
+      "effective_at": "2026-03-25T00:00:00Z",
+      "recovery_at": "2026-03-27T16:00:00Z",
+      "affected_assets": ["ATOM"],
+      "affected_networks": ["Cosmos"],
+      "content_summary": "Cosmos 节点升级，ATOM 提现暂停，恢复后将以公告形式通知。ATOM 充值不受影响。",
+      "url": "https://www.okx.com/zh-hans/help/section/notice"
+    },
+    {
+      "id": "ann_003",
+      "title": "Binance 上线 POL (Polynomial) 充提公告",
+      "platform": "binance",
+      "type": "listing",
+      "published_at": "2026-03-20T08:00:00Z",
+      "effective_at": "2026-03-20T10:00:00Z",
+      "affected_assets": ["POL"],
+      "affected_networks": ["ERC20"],
+      "content_summary": "Binance 已开放 POL 充值和提现，支持 ERC20 网络。交易对 POL/USDT, POL/BTC 将于 2026-03-20 14:00 开放交易。",
+      "url": "https://www.binance.com/zh-CN/support"
+    },
+    {
+      "id": "ann_004",
+      "title": "Binance 系统维护公告（钱包）",
+      "platform": "binance",
+      "type": "wallet_maintenance",
+      "published_at": "2026-03-22T00:00:00Z",
+      "effective_at": "2026-03-22T04:00:00Z",
+      "recovery_at": "2026-03-22T06:00:Z",
+      "affected_assets": ["BTC", "ETH"],
+      "affected_networks": ["Bitcoin", "ERC20"],
+      "content_summary": "钱包系统升级，期间 BTC/ETH 充值和提现暂停，已于 06:00 UTC 恢复。",
+      "url": "https://www.binance.com/zh-CN/support"
+    },
+    {
+      "id": "ann_005",
+      "title": "OKX USDT 充值最低限额调整公告",
+      "platform": "okx",
+      "type": "fee_change",
+      "published_at": "2026-03-15T08:00:00Z",
+      "effective_at": "2026-03-15T12:00:00Z",
+      "affected_assets": ["USDT"],
+      "affected_networks": ["TRC20", "ERC20", "Arbitrum"],
+      "content_summary": "USDT 各网络最低充值限额由 0 调整为 TRC20: 1 USDT, ERC20: 1 USDT, Arbitrum: 1 USDT。调整后低于最低限额的充值将无法到账。",
+      "url": "https://www.okx.com/zh-hans/help/section/notice"
+    }
+  ]
+}

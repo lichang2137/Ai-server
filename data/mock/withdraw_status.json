@@ -1,0 +1,130 @@
+{
+  "_meta": {
+    "description": "提现状态 Mock 数据",
+    "is_mock": true
+  },
+  "uid_10001": {
+    "withdrawals": [
+      {
+        "order_id": "wd_8827391823",
+        "asset": "USDT",
+        "network": "TRC20",
+        "amount": "1000",
+        "fee": "1",
+        "to_address": "TJYs...abc1",
+        "submit_time": "2026-03-25T22:00:00Z",
+        "internal_status": "broadcasted",
+        "internal_status_desc": "已广播，待链上确认",
+        "txid": "abc123def456789000abc123def456789000abc123def456789000abc123def456",
+        "chain_status": "confirming",
+        "confirmations": 5,
+        "required_confirmations": 20,
+        "risk_review_status": "passed",
+        "last_update_time": "2026-03-26T08:00:00Z",
+        "failure_reason": null
+      },
+      {
+        "order_id": "wd_8827391820",
+        "asset": "BTC",
+        "network": "Bitcoin",
+        "amount": "0.05",
+        "fee": "0.0005",
+        "to_address": "bc1qxy...xyz1",
+        "submit_time": "2026-03-24T10:00:00Z",
+        "internal_status": "completed",
+        "internal_status_desc": "已完成，对方平台已入账",
+        "txid": "btctxid123abc456def789000abc123def456abc123def456abc123def456abc1",
+        "chain_status": "confirmed",
+        "confirmations": 3,
+        "required_confirmations": 1,
+        "risk_review_status": "passed",
+        "last_update_time": "2026-03-24T10:30:00Z",
+        "failure_reason": null
+      }
+    ]
+  },
+  "uid_10002": {
+    "withdrawals": [
+      {
+        "order_id": "wd_8827391815",
+        "asset": "USDT",
+        "network": "ERC20",
+        "amount": "500",
+        "fee": "1",
+        "to_address": "0x742...def7",
+        "submit_time": "2026-03-25T14:00:00Z",
+        "internal_status": "risk_review",
+        "internal_status_desc": "风控审核中",
+        "txid": null,
+        "chain_status": null,
+        "confirmations": 0,
+        "required_confirmations": 20,
+        "risk_review_status": "pending",
+        "last_update_time": "2026-03-25T14:30:00Z",
+        "failure_reason": null
+      }
+    ]
+  },
+  "uid_10003": {
+    "withdrawals": [
+      {
+        "order_id": "wd_8827391800",
+        "asset": "ETH",
+        "network": "ERC20",
+        "amount": "2.0",
+        "fee": "0.003",
+        "to_address": "0x123...abc1",
+        "submit_time": "2026-03-23T08:00:00Z",
+        "internal_status": "failed",
+        "internal_status_desc": "提现失败",
+        "txid": null,
+        "chain_status": null,
+        "confirmations": 0,
+        "required_confirmations": 20,
+        "risk_review_status": null,
+        "last_update_time": "2026-03-23T09:00:00Z",
+        "failure_reason": "目标地址网络不匹配，请确认收款平台支持 ERC20 网络"
+      },
+      {
+        "order_id": "wd_8827391801",
+        "asset": "ATOM",
+        "network": "Cosmos",
+        "amount": "50",
+        "fee": "0.01",
+        "to_address": "cosmos1...xyz",
+        "submit_time": "2026-03-25T20:00:00Z",
+        "internal_status": "failed",
+        "internal_status_desc": "提现失败",
+        "txid": null,
+        "chain_status": null,
+        "confirmations": 0,
+        "required_confirmations": 16,
+        "risk_review_status": null,
+        "last_update_time": "2026-03-25T21:00:00Z",
+        "failure_reason": "ATOM (Cosmos) 网络当前暂停提现，请查看公告"
+      }
+    ]
+  },
+  "uid_10004": {
+    "withdrawals": [
+      {
+        "order_id": "wd_8827391790",
+        "asset": "USDT",
+        "network": "TRC20",
+        "amount": "200",
+        "fee": "1",
+        "to_address": "TJYs...xyz9",
+        "submit_time": "2026-03-26T08:00:00Z",
+        "internal_status": "pending",
+        "internal_status_desc": "等待平台处理",
+        "txid": null,
+        "chain_status": null,
+        "confirmations": 0,
+        "required_confirmations": 20,
+        "risk_review_status": "pending",
+        "last_update_time": "2026-03-26T08:30:00Z",
+        "failure_reason": null
+      }
+    ]
+  }
+}

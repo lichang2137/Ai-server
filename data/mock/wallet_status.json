@@ -1,0 +1,96 @@
+{
+  "_meta": {
+    "description": "币种网络充提状态 Mock 数据",
+    "platform": "okx",
+    "is_mock": true,
+    "coverage": "USDT/BTC/ETH 主流网络"
+  },
+  "USDT": {
+    "TRC20": {
+      "deposit_enabled": true,
+      "withdraw_enabled": true,
+      "min_deposit": "1",
+      "min_withdraw": "10",
+      "deposit_confirmations": "1",
+      "withdraw_confirmations": "20",
+      "withdraw_fee": "1",
+      "memo_required": false,
+      "tag_required": false,
+      "maintenance_status": "normal",
+      "alternative_networks": ["ERC20", "Arbitrum", "Solana", "Polygon"]
+    },
+    "ERC20": {
+      "deposit_enabled": true,
+      "withdraw_enabled": true,
+      "min_deposit": "1",
+      "min_withdraw": "10",
+      "deposit_confirmations": "20",
+      "withdraw_confirmations": "20",
+      "withdraw_fee": "1",
+      "memo_required": false,
+      "tag_required": false,
+      "maintenance_status": "normal",
+      "alternative_networks": ["TRC20", "Arbitrum"]
+    },
+    "Arbitrum": {
+      "deposit_enabled": true,
+      "withdraw_enabled": true,
+      "min_deposit": "1",
+      "min_withdraw": "10",
+      "deposit_confirmations": "20",
+      "withdraw_confirmations": "20",
+      "withdraw_fee": "1",
+      "memo_required": false,
+      "tag_required": false,
+      "maintenance_status": "normal",
+      "alternative_networks": ["ERC20", "TRC20"]
+    }
+  },
+  "BTC": {
+    "Bitcoin": {
+      "deposit_enabled": true,
+      "withdraw_enabled": true,
+      "min_deposit": "0.0001",
+      "min_withdraw": "0.001",
+      "deposit_confirmations": "1",
+      "withdraw_confirmations": "1",
+      "withdraw_fee": "0.0005",
+      "memo_required": false,
+      "tag_required": false,
+      "maintenance_status": "normal",
+      "alternative_networks": []
+    }
+  },
+  "ETH": {
+    "ERC20": {
+      "deposit_enabled": true,
+      "withdraw_enabled": true,
+      "min_deposit": "0.01",
+      "min_withdraw": "0.01",
+      "deposit_confirmations": "20",
+      "withdraw_confirmations": "20",
+      "withdraw_fee": "0.003",
+      "memo_required": false,
+      "tag_required": false,
+      "maintenance_status": "normal",
+      "alternative_networks": ["Arbitrum", "Optimism", "Polygon"]
+    }
+  },
+  "ATOM": {
+    "Cosmos": {
+      "deposit_enabled": true,
+      "withdraw_enabled": false,
+      "min_deposit": "0.1",
+      "min_withdraw": "0.1",
+      "deposit_confirmations": "16",
+      "withdraw_confirmations": "16",
+      "withdraw_fee": "0.01",
+      "memo_required": false,
+      "tag_required": false,
+      "maintenance_status": "withdraw_paused",
+      "maintenance_reason": "节点升级维护",
+      "estimated_recovery": "2026-03-27T16:00:00Z",
+      "alternative_networks": []
+    }
+  }
+}

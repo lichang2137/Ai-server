@@ -1,0 +1,117 @@
+{
+  "_meta": {
+    "description": "充值状态 Mock 数据",
+    "is_mock": true
+  },
+  "uid_10001": {
+    "deposits": [
+      {
+        "order_id": "dp_8827391824",
+        "asset": "USDT",
+        "network": "TRC20",
+        "amount": "1000",
+        "from_address": "TJYs...from1",
+        "to_address": "TMX...to1",
+        "txid": "txid_from_exchange_abc123def456",
+        "submit_time": "2026-03-26T07:00:00Z",
+        "chain_confirmations": 3,
+        "required_confirmations": 20,
+        "credit_status": "pending",
+        "credit_status_desc": "链上确认中，平台待入账",
+        "memo_required": false,
+        "memo_received": null,
+        "wallet_maintenance": false,
+        "last_update_time": "2026-03-26T08:30:00Z",
+        "failure_reason": null
+      },
+      {
+        "order_id": "dp_8827391821",
+        "asset": "BTC",
+        "network": "Bitcoin",
+        "amount": "0.05",
+        "from_address": "bc1qxy...from2",
+        "to_address": "bc1qm...to2",
+        "txid": "btctxid_exchange_456ghi789",
+        "submit_time": "2026-03-24T08:00:00Z",
+        "chain_confirmations": 3,
+        "required_confirmations": 1,
+        "credit_status": "credited",
+        "credit_status_desc": "已入账",
+        "memo_required": false,
+        "memo_received": null,
+        "wallet_maintenance": false,
+        "last_update_time": "2026-03-24T08:10:00Z",
+        "failure_reason": null
+      }
+    ]
+  },
+  "uid_10002": {
+    "deposits": [
+      {
+        "order_id": "dp_8827391816",
+        "asset": "USDT",
+        "network": "ERC20",
+        "amount": "500",
+        "from_address": "0x789...from3",
+        "to_address": "0x123...to3",
+        "txid": "txid_from_erc_wallet_xyz789abc",
+        "submit_time": "2026-03-26T06:00:00Z",
+        "chain_confirmations": 18,
+        "required_confirmations": 20,
+        "credit_status": "pending",
+        "credit_status_desc": "链上确认中，预计还需约10分钟入账",
+        "memo_required": false,
+        "memo_received": null,
+        "wallet_maintenance": false,
+        "last_update_time": "2026-03-26T08:45:00Z",
+        "failure_reason": null
+      }
+    ]
+  },
+  "uid_10003": {
+    "deposits": [
+      {
+        "order_id": "dp_8827391802",
+        "asset": "USDT",
+        "network": "TRC20",
+        "amount": "200",
+        "from_address": "TJYs...from4",
+        "to_address": "TMX...to4",
+        "txid": "txid_no_memo_abc999bbb",
+        "submit_time": "2026-03-25T12:00:00Z",
+        "chain_confirmations": 20,
+        "required_confirmations": 20,
+        "credit_status": "memo_missing",
+        "credit_status_desc": "TXID 已确认，但缺少 Memo，平台无法入账",
+        "memo_required": true,
+        "memo_received": false,
+        "wallet_maintenance": false,
+        "last_update_time": "2026-03-25T14:00:00Z",
+        "failure_reason": "Memo/Tag 缺失，请联系转出平台重新发起转账并附带正确 Memo"
+      }
+    ]
+  },
+  "uid_10004": {
+    "deposits": [
+      {
+        "order_id": "dp_8827391791",
+        "asset": "USDT",
+        "network": "TRC20",
+        "amount": "0.5",
+        "from_address": "TJYs...from5",
+        "to_address": "TMX...to5",
+        "txid": "txid_small_amount_aaa111bbb",
+        "submit_time": "2026-03-26T05:00:00Z",
+        "chain_confirmations": 20,
+        "required_confirmations": 20,
+        "credit_status": "failed",
+        "credit_status_desc": "充值失败",
+        "memo_required": false,
+        "memo_received": null,
+        "wallet_maintenance": false,
+        "last_update_time": "2026-03-26T06:00:00Z",
+        "failure_reason": "充值金额 0.5 USDT 低于该网络最低充值限额 1 USDT，无法入账"
+      }
+    ]
+  }
+}

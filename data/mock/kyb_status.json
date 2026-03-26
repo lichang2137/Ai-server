@@ -1,0 +1,137 @@
+{
+  "_meta": {
+    "description": "KYB/KYC 认证状态 Mock 数据",
+    "is_mock": true,
+    "platform": "okx"
+  },
+  "uid_10001": {
+    "user_id": "uid_10001",
+    "platform": "okx",
+    "current_status": "approved",
+    "submitted_at": "2026-03-10T09:00:00Z",
+    "reviewed_at": "2026-03-12T14:30:00Z",
+    "rejection_reason": null,
+    "items": [
+      {
+        "doc_type": "business_license",
+        "doc_name": "营业执照",
+        "status": "approved",
+        "submitted_url": "https://files.example.com/uid_10001/bl.pdf",
+        "submitted_at": "2026-03-10"
+      },
+      {
+        "doc_type": "incorporation_cert",
+        "doc_name": "公司注册证明",
+        "status": "approved",
+        "submitted_url": "https://files.example.com/uid_10001/ic.pdf",
+        "submitted_at": "2026-03-10"
+      },
+      {
+        "doc_type": "address_proof",
+        "doc_name": "地址证明",
+        "status": "approved",
+        "submitted_url": "https://files.example.com/uid_10001/ap.pdf",
+        "submitted_at": "2026-03-10"
+      },
+      {
+        "doc_type": "legal_id",
+        "doc_name": "法人身份证",
+        "status": "approved",
+        "submitted_url": "https://files.example.com/uid_10001/id.pdf",
+        "submitted_at": "2026-03-10"
+      }
+    ],
+    "next_action": null,
+    "estimated_review_time": null
+  },
+  "uid_10002": {
+    "user_id": "uid_10002",
+    "platform": "okx",
+    "current_status": "material_missing",
+    "submitted_at": "2026-03-22T11:00:00Z",
+    "reviewed_at": null,
+    "rejection_reason": null,
+    "items": [
+      {
+        "doc_type": "business_license",
+        "doc_name": "营业执照",
+        "status": "approved",
+        "submitted_url": "https://files.example.com/uid_10002/bl.pdf",
+        "submitted_at": "2026-03-22"
+      },
+      {
+        "doc_type": "incorporation_cert",
+        "doc_name": "公司注册证明",
+        "status": "missing",
+        "submitted_url": null,
+        "submitted_at": null,
+        "rejection_reason": null
+      },
+      {
+        "doc_type": "address_proof",
+        "doc_name": "地址证明",
+        "status": "rejected",
+        "submitted_url": "https://files.example.com/uid_10002/ap_old.pdf",
+        "submitted_at": "2026-03-22",
+        "rejection_reason": "文件已过期，请提供90天内有效版本",
+        "rejection_code": "DOC_EXPIRED"
+      }
+    ],
+    "next_action": "请补充公司注册证明和有效期内地址证明",
+    "estimated_review_time": "1-3个工作日"
+  },
+  "uid_10003": {
+    "user_id": "uid_10003",
+    "platform": "okx",
+    "current_status": "in_review",
+    "submitted_at": "2026-03-25T15:00:00Z",
+    "reviewed_at": null,
+    "rejection_reason": null,
+    "items": [
+      {
+        "doc_type": "business_license",
+        "doc_name": "营业执照",
+        "status": "approved",
+        "submitted_url": "https://files.example.com/uid_10003/bl.pdf",
+        "submitted_at": "2026-03-25"
+      },
+      {
+        "doc_type": "incorporation_cert",
+        "doc_name": "公司注册证明",
+        "status": "approved",
+        "submitted_url": "https://files.example.com/uid_10003/ic.pdf",
+        "submitted_at": "2026-03-25"
+      },
+      {
+        "doc_type": "address_proof",
+        "doc_name": "地址证明",
+        "status": "in_review",
+        "submitted_url": "https://files.example.com/uid_10003/ap.pdf",
+        "submitted_at": "2026-03-25"
+      }
+    ],
+    "next_action": "材料已齐全，正在审核中，请耐心等待",
+    "estimated_review_time": "1-3个工作日"
+  },
+  "uid_10004": {
+    "user_id": "uid_10004",
+    "platform": "binance",
+    "current_status": "rejected",
+    "submitted_at": "2026-03-18T10:00:00Z",
+    "reviewed_at": "2026-03-20T16:00:00Z",
+    "rejection_reason": "公司名称与证件主体不一致",
+    "items": [
+      {
+        "doc_type": "business_license",
+        "doc_name": "营业执照",
+        "status": "rejected",
+        "submitted_url": "https://files.example.com/uid_10004/bl.pdf",
+        "submitted_at": "2026-03-18",
+        "rejection_reason": "公司名称与注册文件不符",
+        "rejection_code": "NAME_MISMATCH"
+      }
+    ],
+    "next_action": "请重新提交与企业注册名称一致的营业执照",
+    "estimated_review_time": null
+  }
+}
