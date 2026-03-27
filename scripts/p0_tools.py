@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
@@ -17,6 +19,8 @@ import mock_tools
 
 STATUS_OK = "OK"
 STATUS_ERROR = "ERROR"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+KB_MASTER_PATH = os.path.join(BASE_DIR, "data", "kb", "kb_master.jsonl")
 
 
 def _now_iso() -> str:
@@ -80,6 +84,41 @@ def _safe_call(result: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     return _build_error(result["error"], result.get("message", "tool error"))
 
 
+def _tokenize(text: str) -> List[str]:
+    return [t for t in re.split(r"[^a-zA-Z0-9_]+", (text or "").lower()) if t]
+
+
+def _load_master_docs() -> List[Dict[str, Any]]:
+    if not os.path.exists(KB_MASTER_PATH):
+        return []
+    docs: List[Dict[str, Any]] = []
+    with open(KB_MASTER_PATH, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                docs.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return docs
+
+
+def _score_doc(query_tokens: List[str], doc: Dict[str, Any]) -> int:
+    title = (doc.get("title") or "").lower()
+    content = (doc.get("content") or "").lower()
+    tags = " ".join(doc.get("tags") or []).lower()
+    score = 0
+    for t in query_tokens:
+        if t in title:
+            score += 5
+        if t in tags:
+            score += 3
+        if t in content:
+            score += 1
+    return score
+
+
 def search_kb(query: str, context: Optional[Dict[str, Any]] = None, limit: int = 3) -> Dict[str, Any]:
     """Search help center / KB with MVP schema.
 
@@ -89,26 +128,56 @@ def search_kb(query: str, context: Optional[Dict[str, Any]] = None, limit: int =
     context = context or {}
     platform = context.get("platform")
     category = context.get("category")
+    max_n = max(1, min(limit, 10))
 
-    raw = mock_tools.docs_search_helpcenter(
-        query=query,
-        platform=platform,
-        category=category,
-        limit=max(1, min(limit, 10)),
-    )
+    # Primary source: merged local KB.
+    master_docs = _load_master_docs()
     mapped: List[Dict[str, Any]] = []
-    for idx, doc in enumerate(raw.get("docs", []), start=1):
-        mapped.append(
-            {
-                "doc_id": f"kb_{idx}",
-                "title": doc.get("title"),
-                "category": doc.get("category", "faq"),
-                "content": doc.get("snippet", ""),
-                "source_url": doc.get("url"),
-                "updated_at": doc.get("updated_at"),
-                "tags": [x for x in [doc.get("platform"), doc.get("category")] if x],
-            }
+    if master_docs:
+        q_tokens = _tokenize(query)
+        scored = []
+        for doc in master_docs:
+            if platform and doc.get("platform") != platform:
+                continue
+            if category and doc.get("category") != category:
+                continue
+            s = _score_doc(q_tokens, doc)
+            if s > 0:
+                scored.append((s, doc))
+        scored.sort(key=lambda x: x[0], reverse=True)
+        for _, doc in scored[:max_n]:
+            mapped.append(
+                {
+                    "doc_id": doc.get("id"),
+                    "title": doc.get("title"),
+                    "category": doc.get("category", "faq"),
+                    "content": (doc.get("content") or "")[:400],
+                    "source_url": doc.get("source_url"),
+                    "updated_at": doc.get("updated_at"),
+                    "tags": doc.get("tags") or [],
+                }
+            )
+
+    # Fallback: legacy mock list.
+    if not mapped:
+        raw = mock_tools.docs_search_helpcenter(
+            query=query,
+            platform=platform,
+            category=category,
+            limit=max_n,
         )
+        for idx, doc in enumerate(raw.get("docs", []), start=1):
+            mapped.append(
+                {
+                    "doc_id": f"kb_{idx}",
+                    "title": doc.get("title"),
+                    "category": doc.get("category", "faq"),
+                    "content": doc.get("snippet", ""),
+                    "source_url": doc.get("url"),
+                    "updated_at": doc.get("updated_at"),
+                    "tags": [x for x in [doc.get("platform"), doc.get("category")] if x],
+                }
+            )
 
     if not mapped:
         return _build_success(

@@ -1,0 +1,35 @@
+{
+  "version": "2026-03-27",
+  "knowledge_bases": [
+    {
+      "name": "okx",
+      "type": "web_crawl",
+      "enabled": true,
+      "inputs": [
+        "data/kb/okx_helpcenter_docs.jsonl",
+        "data/kb/helpcenter_docs.jsonl",
+        "data/kb/manual/okx"
+      ],
+      "owner": "system"
+    },
+    {
+      "name": "binance",
+      "type": "web_crawl",
+      "enabled": true,
+      "inputs": [
+        "data/kb/helpcenter_docs.jsonl",
+        "data/kb/manual/binance"
+      ],
+      "owner": "system"
+    },
+    {
+      "name": "px",
+      "type": "manual_docs",
+      "enabled": true,
+      "inputs": [
+        "data/kb/manual/px"
+      ],
+      "owner": "user"
+    }
+  ]
+}
