@@ -43,3 +43,14 @@ Each JSONL row should include:
 2. Ingest manual docs (`px`)
 3. Merge into `data/kb/kb_master.jsonl`
 4. `search_kb` reads `kb_master.jsonl` first, mock fallback second
+
+## One-command build
+
+Run:
+`powershell -ExecutionPolicy Bypass -File scripts/kb_build_all.ps1`
+
+Pipeline:
+1. Build `kb_master.jsonl` from `source_registry.json`
+2. Validate row count
+3. Run `search_kb` smoke
+4. Run 20-query retrieval smoke

@@ -67,6 +67,33 @@ def _fp_from_text(content: str, source_url: str) -> str:
     return hashlib.sha256(seed.encode("utf-8")).hexdigest()
 
 
+def _is_low_quality_row(row: Dict[str, Any]) -> bool:
+    title = _norm_text(row.get("title", "")).lower()
+    content = _norm_text(row.get("content", "")).lower()
+    source_url = _norm_text(row.get("source_url", "")).lower()
+    category = _norm_text(row.get("category", "")).lower()
+
+    blocked = [
+        "human verification",
+        "verify you are human",
+        "security check",
+        "captcha",
+    ]
+    generic = [
+        "support faq",
+        "help center",
+        "cookie preferences",
+    ]
+    min_len = 40 if category in {"kyb", "workflow"} else 60
+    if len(content) < min_len:
+        return True
+    if any(s in title or s in content for s in blocked):
+        return True
+    if (source_url.endswith("/help") or "/support/faq" in source_url) and any(g in content for g in generic):
+        return True
+    return False
+
+
 def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
     if not path.exists():
@@ -225,12 +252,14 @@ def _write_jsonl(path: Path, rows: List[Dict[str, Any]]) -> None:
 def build(registry_path: Path, out_path: Path, root: Path) -> Dict[str, Any]:
     raw_rows, counts = _collect_rows_from_registry(registry_path, root)
     normalized = [_normalize_row(r, default_platform=str(r.get("platform", "unknown"))) for r in raw_rows]
-    merged, deduped = _dedupe_rows(normalized)
+    filtered = [r for r in normalized if not _is_low_quality_row(r)]
+    merged, deduped = _dedupe_rows(filtered)
     _write_jsonl(out_path, merged)
     return {
         "sources": counts,
         "raw_rows": len(raw_rows),
         "normalized_rows": len(normalized),
+        "filtered_rows": len(filtered),
         "deduped": deduped,
         "written": len(merged),
         "out": str(out_path),

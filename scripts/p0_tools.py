@@ -21,6 +21,25 @@ STATUS_OK = "OK"
 STATUS_ERROR = "ERROR"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KB_MASTER_PATH = os.path.join(BASE_DIR, "data", "kb", "kb_master.jsonl")
+LOW_QUALITY_PATTERNS = [
+    "human verification",
+    "verify you are human",
+    "cookie preferences",
+    "all rights reserved",
+]
+GENERIC_PAGE_PATTERNS = [
+    "support faq",
+    "help center",
+    "customer service",
+    "top questions",
+]
+QUERY_SYNONYMS = {
+    "withdraw": ["withdrawal", "提现", "提币", "没到账", "未到账"],
+    "deposit": ["充值", "入金", "credited", "not credited", "没到账", "未到账"],
+    "kyb": ["kyc", "verification", "审核", "补件", "驳回"],
+    "memo": ["tag", "memo", "comment"],
+    "maintenance": ["维护", "maintenance", "suspend", "暂停"],
+}
 
 
 def _now_iso() -> str:
@@ -88,6 +107,25 @@ def _tokenize(text: str) -> List[str]:
     return [t for t in re.split(r"[^a-zA-Z0-9_]+", (text or "").lower()) if t]
 
 
+def _expand_query_tokens(query: str) -> List[str]:
+    base = _tokenize(query)
+    q_lower = (query or "").lower()
+    expanded = list(base)
+    for key, words in QUERY_SYNONYMS.items():
+        if key in q_lower or any(w in query for w in words):
+            expanded.extend(_tokenize(key))
+            for w in words:
+                expanded.extend(_tokenize(w))
+    # dedupe while preserving order
+    seen = set()
+    out = []
+    for t in expanded:
+        if t not in seen:
+            seen.add(t)
+            out.append(t)
+    return out
+
+
 def _load_master_docs() -> List[Dict[str, Any]]:
     if not os.path.exists(KB_MASTER_PATH):
         return []
@@ -108,15 +146,48 @@ def _score_doc(query_tokens: List[str], doc: Dict[str, Any]) -> int:
     title = (doc.get("title") or "").lower()
     content = (doc.get("content") or "").lower()
     tags = " ".join(doc.get("tags") or []).lower()
+    category = (doc.get("category") or "").lower()
+    source_url = (doc.get("source_url") or "").lower()
     score = 0
     for t in query_tokens:
         if t in title:
             score += 5
         if t in tags:
             score += 3
+        if t in category:
+            score += 2
         if t in content:
             score += 1
+    if any(t in query_tokens for t in ["kyb", "kyc", "verification", "identity"]):
+        if any(k in title or k in content for k in ["kyb", "kyc", "verification", "identity"]):
+            score += 4
+    if any(t in query_tokens for t in ["withdraw", "withdrawal"]):
+        if "withdraw" in title or "withdraw" in content:
+            score += 3
+    if any(t in query_tokens for t in ["deposit", "credited"]):
+        if "deposit" in title or "deposit" in content:
+            score += 3
+    if any(p in title for p in GENERIC_PAGE_PATTERNS):
+        score -= 5
+    if any(p in content for p in GENERIC_PAGE_PATTERNS):
+        score -= 3
+    if "/support/faq" in source_url or source_url.endswith("/help"):
+        score -= 4
     return score
+
+
+def _is_low_quality_doc(doc: Dict[str, Any]) -> bool:
+    title = (doc.get("title") or "").lower()
+    content = (doc.get("content") or "").lower()
+    category = (doc.get("category") or "").lower()
+    min_len = 40 if category in {"kyb", "workflow"} else 60
+    if len(content.strip()) < min_len:
+        return True
+    if any(p in title for p in LOW_QUALITY_PATTERNS):
+        return True
+    if any(p in content for p in LOW_QUALITY_PATTERNS):
+        return True
+    return False
 
 
 def search_kb(query: str, context: Optional[Dict[str, Any]] = None, limit: int = 3) -> Dict[str, Any]:
@@ -134,18 +205,29 @@ def search_kb(query: str, context: Optional[Dict[str, Any]] = None, limit: int =
     master_docs = _load_master_docs()
     mapped: List[Dict[str, Any]] = []
     if master_docs:
-        q_tokens = _tokenize(query)
+        q_tokens = _expand_query_tokens(query)
+        q_lower = (query or "").lower()
         scored = []
         for doc in master_docs:
             if platform and doc.get("platform") != platform:
                 continue
             if category and doc.get("category") != category:
                 continue
+            if _is_low_quality_doc(doc):
+                continue
             s = _score_doc(q_tokens, doc)
+            # For non-latin query or sparse token query, fallback to raw substring scoring.
+            if s <= 0 and q_lower and (
+                q_lower in (doc.get("title") or "").lower()
+                or q_lower in (doc.get("content") or "").lower()
+            ):
+                s = 2
             if s > 0:
                 scored.append((s, doc))
         scored.sort(key=lambda x: x[0], reverse=True)
-        for _, doc in scored[:max_n]:
+        for score, doc in scored[:max_n]:
+            if score < 2:
+                continue
             mapped.append(
                 {
                     "doc_id": doc.get("id"),

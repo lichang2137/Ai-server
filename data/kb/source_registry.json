@@ -6,6 +6,7 @@
       "type": "web_crawl",
       "enabled": true,
       "inputs": [
+        "data/kb/bootstrap_kb.jsonl",
         "data/kb/okx_helpcenter_docs.jsonl",
         "data/kb/helpcenter_docs.jsonl",
         "data/kb/manual/okx"
