@@ -2,6 +2,24 @@
 
 An installable AI customer-support service for OpenClaw.
 
+## OpenClaw Start Here
+
+OpenClaw should sync this repository from `main`.
+
+- Repository: `https://github.com/lichang2137/Ai-server`
+- Branch: `main`
+- Runtime entry: `app.main:app`
+- OpenClaw ingress: `POST /v1/support/message`
+
+Expected deployment mode:
+
+1. OpenClaw syncs `main` to the Tencent Cloud host.
+2. The host writes a local `.env.local` with runtime and Feishu values.
+3. OpenClaw starts the FastAPI service from this repo.
+4. OpenClaw exposes a child agent that forwards user messages and attachments into this service.
+
+If OpenClaw is pulling `main`, it is pulling the current supported service version. Do not point OpenClaw at old prototype branches.
+
 OpenClaw is responsible for channel access, message delivery, session passthrough, and attachment passthrough.
 This service is responsible for routing, workflows, knowledge retrieval, live status tools, KYB document review, handoff summaries, and runtime persistence.
 
@@ -49,6 +67,8 @@ Health endpoint:
 OpenClaw ingress endpoint:
 
 - `POST /v1/support/message`
+
+The service will auto-load `.env.local` from the repo root if present.
 
 ## Request example
 
