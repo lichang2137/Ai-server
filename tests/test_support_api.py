@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import sqlite3
 import shutil
 from pathlib import Path
 from uuid import uuid4
@@ -18,9 +19,12 @@ from PIL import Image
 from reportlab.pdfgen import canvas
 
 from app.main import app
+from app.schemas import SupportMessageRequest
 from app.services.knowledge import search_platform_kb
 from app.services.platform_registry import PlatformRegistry
+from app.services.router import route_message
 from app.services.tool_layer import call_status_tool
+from app.database import reset_incompatible_sqlite_schema
 from platforms.okx_help.adapters.status_adapter import OKXFeishuBitableAdapter
 
 
@@ -97,6 +101,15 @@ def test_status_route_uses_live_adapter_and_handoff_for_rejected_case(client: Te
     assert body["handoff"]["needed"] is True
     assert body["handoff"]["summary"]["current_status"] == "rejected"
     assert body["reply"]["structured"]["conclusion"] == "Current KYB status: rejected."
+
+
+def test_chinese_status_query_routes_to_status_diagnosis() -> None:
+    decision = route_message(
+        SupportMessageRequest.model_validate(
+            _payload("请帮我看一下企业认证进度，还缺什么材料？", platform_user_id="uid_20001", session_id="sess-cn-status")
+        )
+    )
+    assert decision.route == "status_diagnosis"
 
 
 def test_repeated_clarification_loops_auto_handoff(client: TestClient) -> None:
@@ -377,3 +390,27 @@ def test_okx_feishu_adapter_sorts_timestamp_rows(monkeypatch: pytest.MonkeyPatch
     result = adapter.get_kyb_status("uid_30002", {"locale": "zh-CN"})
 
     assert result.data["current_status"] == "pending_review"
+
+
+def test_reset_incompatible_sqlite_schema_backs_up_legacy_db(tmp_path: Path) -> None:
+    db_path = tmp_path / "legacy.db"
+    connection = sqlite3.connect(db_path)
+    try:
+        connection.execute(
+            """
+            CREATE TABLE support_sessions (
+              session_id TEXT PRIMARY KEY,
+              channel TEXT NOT NULL,
+              channel_user_id TEXT NOT NULL
+            )
+            """
+        )
+        connection.commit()
+    finally:
+        connection.close()
+
+    backup_path = reset_incompatible_sqlite_schema(f"sqlite:///{db_path}")
+
+    assert backup_path is not None
+    assert backup_path.exists()
+    assert not db_path.exists()

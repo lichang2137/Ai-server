@@ -5,13 +5,14 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 
-from app.database import Base, engine, get_db
+from app.database import Base, engine, get_db, reset_incompatible_sqlite_schema
 from app.schemas import SupportMessageRequest, SupportMessageResponse
 from app.services.orchestrator import handle_support_message, initialize_runtime
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    reset_incompatible_sqlite_schema(str(engine.url))
     Base.metadata.create_all(bind=engine)
     initialize_runtime()
     yield
