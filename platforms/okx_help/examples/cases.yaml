@@ -1,0 +1,45 @@
+cases:
+- id: okx-kyc-reject-invalid-photo
+  route: knowledge_qa
+  user_message: 为什么我的身份认证失败了？
+  expected_intent: verification_failure_reason
+  expected_sections:
+  - faq-verification
+- id: okx-poa-requirements
+  route: knowledge_qa
+  user_message: 地址证明需要什么文件，多久内有效？
+  expected_intent: poa_requirements
+  expected_sections:
+  - faq-verification
+- id: okx-institutional-docs
+  route: knowledge_qa
+  user_message: 企业认证需要准备哪些材料？
+  expected_intent: institutional_required_documents
+  expected_sections:
+  - faq-institutional-onboarding
+- id: okx-ticket-followup
+  route: knowledge_qa
+  user_message: 怎么查看我的客服工单进度？
+  expected_intent: ticket_followup
+  expected_sections:
+  - faq-account-management-and-security
+- id: okx-withdraw-suspension
+  route: status_diagnosis
+  user_message: 某条链现在能提现吗？
+  expected_intent: wallet_network_status
+  expected_sections:
+  - announcements-deposit-withdrawal-suspension-resumption
+  - faq-crypto-withdrawals
+- id: okx-security-handoff
+  route: handoff
+  user_message: 我账号可能被盗了，想先冻结账户。
+  expected_intent: account_security_incident
+  expected_sections:
+  - faq-account-and-wallet-safeguard-measures
+  - faq-account-management-and-security
+- id: okx-kyb-review
+  route: kyb_review
+  user_message: 我上传了企业认证材料，帮我先看还缺什么。
+  expected_intent: institutional_document_review
+  expected_sections:
+  - faq-institutional-onboarding

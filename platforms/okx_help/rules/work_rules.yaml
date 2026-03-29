@@ -1,0 +1,27 @@
+operational_policies:
+- id: one_entity_one_account
+  applies_to:
+  - institutional_onboarding
+  rule: One legal entity should operate one account. Duplicate account scenarios require
+    manual support review.
+- id: individual_cannot_convert_to_institutional
+  applies_to:
+  - institutional_onboarding
+  rule: An account already completed as individual verification cannot be converted
+    into an institutional account.
+- id: institutional_onboarding_web_only
+  applies_to:
+  - institutional_onboarding
+  rule: Institutional onboarding currently requires the web flow instead of the app
+    flow.
+- id: ticket_follow_up_same_thread
+  applies_to:
+  - ticket_support
+  rule: Users should continue follow-up in the same support ticket instead of creating
+    a new one for the same issue.
+handoff_conditions:
+- account compromised or stolen
+- verification identity occupied by another account
+- unsupported country or service restriction
+- document mismatch that cannot be resolved by self-service instructions
+- institutional edge-case types requiring email verification follow-up

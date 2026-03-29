@@ -1,0 +1,53 @@
+institutional_required_documents:
+- certificate_of_incorporation_or_business_license
+- memorandum_articles_or_bylaws
+- director_list
+- latest_shareholding_chart_or_shareholder_register_within_12_months
+- business_address_proof
+- identity_document_and_address_proof_for_directors_ubo_and_authorized_users
+individual_verification_rules:
+- id: id_validity_threshold
+  rule: Identity documents must remain valid for at least 60 days.
+  decision: resubmit
+- id: poa_recency
+  rule: Proof of address must show the user's real name, full current address, and
+    be issued within the last 3 months.
+  decision: resubmit
+- id: document_quality
+  rule: Blurred, cropped, edited, screenshot, black-and-white, damaged, or incomplete
+    documents are not accepted.
+  decision: resubmit
+- id: identity_mismatch
+  rule: Face mismatch or identity inconsistency between selfie and document requires
+    manual review and may lead to rejection.
+  decision: manual_review
+- id: duplicate_identity
+  rule: A single identity should not verify multiple accounts. Duplicate identity
+    occupation requires manual support intervention.
+  decision: manual_review
+- id: age_requirement
+  rule: Users must be at least 18 years old to pass verification.
+  decision: reject
+- id: unsupported_country
+  rule: Users in unsupported countries or restricted regions cannot complete verification
+    for service activation.
+  decision: reject
+accepted_poa_documents:
+- government_issued_identity_document_with_address
+- bank_or_credit_card_statement
+- utility_bill
+- stamped_tenancy_agreement
+- tax_document
+- salary_slip
+- valid_insurance_contract
+- government_or_public_authority_residence_letter
+rejected_poa_documents:
+- bank_account_opening_certificate
+- electronic_driver_license_only
+- payment_screenshot
+- ecommerce_order_record
+- food_delivery_order_record
+- mobile_phone_bill
+escalation_targets:
+  institutional_general_questions: verification@okx.com
+  identity_occupied_or_manual_kyc_review: human_support

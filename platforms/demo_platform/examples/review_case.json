@@ -1,0 +1,4 @@
+{
+  "files": ["CI.pdf", "COI.pdf", "passport.pdf", "onboarding.docx"],
+  "expected_decision": "approve"
+}

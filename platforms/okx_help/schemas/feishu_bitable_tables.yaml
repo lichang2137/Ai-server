@@ -1,0 +1,127 @@
+tables:
+  verification_status:
+    purpose: live verification and onboarding status
+    required_env: OKX_FEISHU_VERIFICATION_TABLE_ID
+    fields:
+      user_id:
+        type: text
+        required: true
+      verification_scope:
+        type: single_select
+        required: true
+        options:
+          - individual_kyc
+          - institutional_kyb
+      current_status:
+        type: single_select
+        required: true
+        options:
+          - pending_review
+          - material_missing
+          - in_review
+          - rejected
+          - approved
+          - expired
+          - manual_review
+      missing_items:
+        type: multi_select_or_text
+        required: false
+      rejection_reason:
+        type: text
+        required: false
+      next_action:
+        type: long_text
+        required: false
+      eta:
+        type: text
+        required: false
+      case_id:
+        type: text
+        required: false
+      updated_at:
+        type: datetime
+        required: true
+      is_active:
+        type: checkbox
+        required: false
+  deposit_status:
+    purpose: live deposit tracking rows
+    required_env: OKX_FEISHU_DEPOSIT_TABLE_ID
+    fields:
+      user_id: { type: text, required: true }
+      asset: { type: text, required: true }
+      network: { type: text, required: false }
+      status:
+        type: single_select
+        required: true
+        options:
+          - pending_confirmations
+          - processing
+          - credited
+          - failed
+          - manual_review
+          - suspended
+      txid: { type: text, required: false }
+      confirmations: { type: text, required: false }
+      next_action: { type: long_text, required: false }
+      updated_at: { type: datetime, required: true }
+      is_active: { type: checkbox, required: false }
+  withdraw_status:
+    purpose: live withdraw tracking rows
+    required_env: OKX_FEISHU_WITHDRAW_TABLE_ID
+    fields:
+      user_id: { type: text, required: true }
+      asset: { type: text, required: true }
+      network: { type: text, required: false }
+      status:
+        type: single_select
+        required: true
+        options:
+          - pending_review
+          - processing
+          - manual_review
+          - completed
+          - failed
+          - canceled
+          - rejected
+      txid: { type: text, required: false }
+      review_reason: { type: long_text, required: false }
+      next_action: { type: long_text, required: false }
+      updated_at: { type: datetime, required: true }
+      is_active: { type: checkbox, required: false }
+  network_status:
+    purpose: wallet and network suspension or recovery status
+    required_env: OKX_FEISHU_NETWORK_TABLE_ID
+    fields:
+      asset: { type: text, required: true }
+      network: { type: text, required: true }
+      deposit_enabled: { type: checkbox, required: true }
+      withdraw_enabled: { type: checkbox, required: true }
+      announcement_url: { type: text, required: false }
+      eta: { type: text, required: false }
+      current_status_note: { type: long_text, required: false }
+      updated_at: { type: datetime, required: true }
+      is_active: { type: checkbox, required: false }
+  support_tickets:
+    purpose: optional manual-support follow-up table
+    required_env: OKX_FEISHU_TICKET_TABLE_ID
+    fields:
+      user_id: { type: text, required: true }
+      ticket_id: { type: text, required: true }
+      status:
+        type: single_select
+        required: true
+        options:
+          - open
+          - waiting_user
+          - waiting_internal
+          - resolved
+          - closed
+      latest_reply: { type: long_text, required: false }
+      next_action: { type: long_text, required: false }
+      updated_at: { type: datetime, required: true }
+      is_active: { type: checkbox, required: false }
+credentials:
+  FEISHU_APP_ID: app credential
+  FEISHU_APP_SECRET: app credential
+  OKX_FEISHU_BITABLE_APP_TOKEN: bitable app token

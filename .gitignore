@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
+.pytest_cache/
 
 # Node
 node_modules/
@@ -21,3 +22,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Local runtime data
+var/
+test_ai_server.db
+test_ai_server_framework*.db
+tmp/

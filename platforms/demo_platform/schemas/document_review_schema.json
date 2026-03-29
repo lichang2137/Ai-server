@@ -1,0 +1,5 @@
+{
+  "documents": "reviewed document list",
+  "cross_checks": "comparison and freshness results",
+  "recommendation": "approve | resubmit | reject | manual_review"
+}

@@ -1,70 +1,101 @@
-# Crypto Support MVP
+# OpenClaw AI Support Core
 
-加密平台 AI 客服助手 — AI Customer Service Agent for OKX / Binance.
+An installable AI customer-support service for OpenClaw.
 
-## 项目概述
+OpenClaw is responsible for channel access, message delivery, session passthrough, and attachment passthrough.
+This service is responsible for routing, workflows, knowledge retrieval, live status tools, KYB document review, handoff summaries, and runtime persistence.
 
-面向加密交易平台用户的"安全型客服 Agent"，核心能力：
-- 知识问答（帮助中心/公告/规则/参数）
-- 状态查询（KYB/充值/提现/钱包状态）
-- 问题诊断（充值未到账/提现卡住/KYC失败）
-- 操作引导（补材料/查进度/提交工单）
+## What V1 ships
 
-**不做：** 交易执行 / 账户权限修改 / 投资建议
+- `knowledge_qa`
+  Answer rules, SOPs, FAQs, and announcements from the active platform package.
+- `status_diagnosis`
+  Use live adapters first. If no adapter is available, return documentation-backed guidance instead of pretending to know live status.
+- `kyb_review`
+  Accept PDF, image, and Office uploads. Extract fields, cross-check documents, calculate freshness, and produce a human-review recommendation with evidence.
+- `handoff`
+  Generate a structured summary for human support or review teams.
 
-## 目录结构
+## Architecture
 
+```mermaid
+flowchart TD
+    U["User<br/>Lark / Telegram"] --> OC["OpenClaw<br/>channel and attachment passthrough"]
+    OC --> API["AI Support Core API"]
+    API --> RT["Router"]
+    RT --> WF["Workflow Engine"]
+    WF --> MEM["Memory Store"]
+    WF --> RAG["Knowledge Retrieval"]
+    WF --> TOOL["Tool Layer"]
+    WF --> DOC["Document Review Engine"]
+    TOOL --> ADP["Platform Adapters"]
+    RAG --> KB["Platform Package Knowledge"]
+    DOC --> EVD["Evidence Store"]
 ```
-ai-customer-service/
-├── docs/                   # 产品文档
-│   ├── PRODUCT_OVERVIEW.md       # 产品定位
-│   ├── SCENARIO_FLOWS.md        # 场景流程
-│   ├── TOOLS_SPEC.md            # 工具协议
-│   ├── SUPPORT_AGENT_PROMPT.md   # Agent System Prompt
-│   ├── FAQ_AND_KB_SOURCES.md    # 知识库来源
-│   └── DATA_INTEGRATION.md      # 真实数据接入指南
-├── data/mock/               # Mock 数据（Phase 1）
-│   ├── kyb_status.json           # KYB 状态
-│   ├── withdraw_status.json      # 提现状态
-│   ├── deposit_status.json       # 充值状态
-│   ├── wallet_status.json        # 钱包/网络状态
-│   └── announcements.json        # 公告
-├── scripts/
-│   └── mock_tools.py            # 工具 CLI（10个工具）
-└── SPEC.md                  # 项目规格书
-```
 
-## 快速测试
+Detailed notes live in [docs/AI_SERVER_V1_ARCHITECTURE.md](/C:/Users/26265/Documents/New%20project/Ai-server/docs/AI_SERVER_V1_ARCHITECTURE.md).
+
+## Quick start
 
 ```bash
-# 查 KYB 状态
-python3 scripts/mock_tools.py get_kyb_status --user_id uid_10002
-
-# 查提现状态
-python3 scripts/mock_tools.py get_withdraw_status --user_id uid_10001 --asset USDT
-
-# 查充值状态
-python3 scripts/mock_tools.py get_deposit_status --user_id uid_10003 --asset USDT
-
-# 查钱包/网络状态
-python3 scripts/mock_tools.py get_wallet_network_status --asset ATOM --network Cosmos
-
-# 查币链参数
-python3 scripts/mock_tools.py params_search_assets --asset USDT --network TRC20
+python -m pip install -r requirements.txt
+uvicorn app.main:app --reload
 ```
 
-## Mock 用户 UID
+Health endpoint:
 
-| UID | 场景 |
-|-----|------|
-| uid_10001 | KYB 已通过，正常充提记录 |
-| uid_10002 | KYB 材料缺失（缺公司注册证明 + 地址证明过期） |
-| uid_10003 | 充值 Memo 缺失，提现失败（网络错误） |
-| uid_10004 | KYB 被拒（公司名称不一致），提现风控审核中 |
+- `GET /health`
 
-## Agent 调用
+OpenClaw ingress endpoint:
 
-OpenClaw Agent ID: `customer`
-绑定群: `oc_e1f960d3f17f6c2e0f2057c723dbc7d0`
+- `POST /v1/support/message`
 
-在绑定群内 @mention 机器人即可触发客服助手。
+## Request example
+
+```json
+{
+  "channel": "telegram",
+  "channel_user_id": "tg-user-1",
+  "session_id": "sess-1",
+  "platform_user_id": "uid_10002",
+  "message_id": "msg-001",
+  "text": "Why is my KYB still pending?",
+  "timestamp": "2026-03-28T10:00:00Z",
+  "context": {
+    "locale": "zh-CN",
+    "attachments": []
+  }
+}
+```
+
+## Platform packages
+
+Each installable platform lives under `platforms/<platform_id>/` and must include:
+
+- `platform.yaml`
+- `knowledge/`
+- `rules/`
+- `schemas/`
+- `prompts/`
+- `examples/`
+- optional `adapters/`
+
+The runtime validates this layout at startup.
+
+The current default platform is `okx_help`.
+
+## OpenClaw installation
+
+See [docs/OPENCLAW_INSTALL.md](/C:/Users/26265/Documents/New%20project/Ai-server/docs/OPENCLAW_INSTALL.md).
+
+For the temporary live-status plan backed by Feishu Bitable, see [docs/OKX_FEISHU_BITABLE_SETUP.md](/C:/Users/26265/Documents/New%20project/Ai-server/docs/OKX_FEISHU_BITABLE_SETUP.md).
+
+## Runtime schema
+
+The storage schema is documented in [sql/ai_support_runtime_schema.sql](/C:/Users/26265/Documents/New%20project/Ai-server/sql/ai_support_runtime_schema.sql).
+
+## Tests
+
+```bash
+pytest
+```

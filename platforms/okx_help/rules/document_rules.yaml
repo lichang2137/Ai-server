@@ -1,0 +1,81 @@
+required_documents:
+  - CI
+  - COI
+  - Passport
+  - OnboardingForm
+freshness_rules:
+  COI: 365
+  CI: 365
+  PoBA: 90
+document_types:
+  CI:
+    filename_patterns: ["ci", "certificate_of_incorporation", "incorporation", "business_license"]
+    text_patterns: ["certificate of incorporation", "business license", "registration no", "reg. no"]
+  COI:
+    filename_patterns: ["coi", "certificate_of_incumbency", "incumbency", "shareholder_register"]
+    text_patterns: ["certificate of incumbency", "shareholder", "share register", "shares"]
+  "M&A":
+    filename_patterns: ["bylaws", "memorandum", "articles"]
+    text_patterns: ["bylaws", "memorandum and articles", "as adopted"]
+  CTC:
+    filename_patterns: ["ctc", "certified_true_copy"]
+    text_patterns: ["certified true copy", "true copy", "license no"]
+  Passport:
+    filename_patterns: ["passport", "id_card", "identity"]
+    text_patterns: ["passport", "passport no", "passport number", "identity card"]
+  PoBA:
+    filename_patterns: ["water_bill", "address", "proof_of_address", "poba", "bank_statement", "utility_bill"]
+    text_patterns: ["water bill", "proof of address", "statement address", "utility bill", "credit card statement"]
+  OnboardingForm:
+    filename_patterns: ["onboarding", "application_form", "account_application", "kyb_form"]
+    text_patterns: ["account application form", "corporate and institutional account application form", "appendix"]
+field_extractors:
+  entity_name:
+    document_types: ["CI", "COI", "OnboardingForm"]
+    regexes:
+      - '(?i)(Vista Capital Ltd\.?)'
+      - '(?i)(?:company|entity|applicant)[:\s]+([A-Z][A-Za-z &.,-]+(?:Ltd|Limited|Corp|Corporation))'
+  registration_no:
+    document_types: ["CI", "COI"]
+    regexes:
+      - '(?i)(?:reg(?:istration)?(?: no\.?| number)?[:#]?\s*)([A-Z0-9-]+)'
+  person_name:
+    document_types: ["COI", "Passport", "OnboardingForm", "PoBA"]
+    regexes:
+      - '(?i)(?:UBO|Director|Name|Customer)[:\s]+([A-Z][A-Z ,.-]+)'
+      - '(?i)(LI, YANG|YANG LI|Edward Xudong He)'
+  passport_no:
+    document_types: ["Passport", "OnboardingForm"]
+    regexes:
+      - '(?i)(?:passport(?: no\.?| number)[:#]?\s*)([A-Z0-9]+)'
+  issue_date:
+    document_types: ["CI", "COI", "Passport", "PoBA", "M&A"]
+    regexes:
+      - '(?i)(?:issue date|date|as adopted)[:\s]+([A-Za-z]+ \d{1,2}, \d{4})'
+      - '(\d{4}-\d{2}-\d{2})'
+      - '(\d{2}-\d{2}-\d{4})'
+  address:
+    document_types: ["PoBA", "OnboardingForm"]
+    regexes:
+      - '(?i)(Whampoa Garden[^\n]+|Kowloon[^\n]+|[0-9A-Za-z ,.-]+(?:Road|Street|Garden|Kowloon))'
+  shareholder_name:
+    document_types: ["COI", "OnboardingForm"]
+    regexes:
+      - '(?i)(LI, YANG|YANG LI)'
+  shareholding_percent:
+    document_types: ["COI", "OnboardingForm"]
+    regexes:
+      - '(?i)(100%|50,000 shares)'
+comparisons:
+  - id: entity_name_consistency
+    field: entity_name
+    document_types: ["CI", "COI", "OnboardingForm"]
+  - id: identity_consistency
+    field: person_name
+    document_types: ["Passport", "OnboardingForm", "COI"]
+  - id: passport_consistency
+    field: passport_no
+    document_types: ["Passport", "OnboardingForm"]
+  - id: shareholding_consistency
+    field: shareholding_percent
+    document_types: ["COI", "OnboardingForm"]

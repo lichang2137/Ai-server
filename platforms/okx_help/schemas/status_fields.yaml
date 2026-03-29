@@ -1,0 +1,63 @@
+normalized_issue_fields:
+- issue_family
+- route_hint
+- source_mode
+- section_slug
+- section_title
+- required_documents
+- unsupported_conditions
+- handoff_required
+- recommended_next_action
+- evidence_urls
+tool_contracts:
+  get_kyb_status:
+    description: Institutional or identity verification status.
+    expected_fields:
+    - current_status
+    - missing_items
+    - rejection_reason
+    - next_action
+    - eta
+  get_deposit_status:
+    description: Deposit status lookup.
+    expected_fields:
+    - asset
+    - network
+    - status
+    - txid
+    - confirmations
+    - next_action
+  get_withdraw_status:
+    description: Withdrawal status lookup.
+    expected_fields:
+    - asset
+    - network
+    - status
+    - txid
+    - review_reason
+    - next_action
+  get_wallet_network_status:
+    description: Wallet and network suspension or recovery status.
+    expected_fields:
+    - asset
+    - network
+    - deposit_enabled
+    - withdraw_enabled
+    - announcement_url
+    - eta
+document_review_fields:
+  core_identity:
+  - full_name
+  - date_of_birth
+  - id_number
+  - country
+  proof_of_address:
+  - full_name
+  - full_address
+  - issue_date
+  - document_type
+  institutional_core:
+  - entity_name
+  - registration_number
+  - incorporation_date
+  - ownership_structure

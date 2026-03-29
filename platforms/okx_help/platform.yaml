@@ -1,0 +1,35 @@
+id: okx_help
+name: OKX Help Center
+default_locale: zh-CN
+enabled_routes:
+- knowledge_qa
+- status_diagnosis
+- kyb_review
+- handoff
+workflow_nodes:
+  knowledge_qa:
+  - classify
+  - gather_context
+  - retrieve_kb
+  - render_reply
+  status_diagnosis:
+  - classify
+  - gather_context
+  - call_tool
+  - retrieve_kb
+  - render_reply
+  - handoff
+  kyb_review:
+  - classify
+  - gather_context
+  - review_documents
+  - cross_check
+  - handoff
+  - render_reply
+  handoff:
+  - classify
+  - gather_context
+  - handoff
+  - render_reply
+source_artifact: C:\Users\26265\Documents\New project\garrytan\artifacts\okx_help
+article_count: 983

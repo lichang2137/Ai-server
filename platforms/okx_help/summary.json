@@ -1,0 +1,28 @@
+{
+  "source_summary": {
+    "generated_at": "2026-03-29T13:16:00.686799+00:00",
+    "home_url": "https://www.okx.com/zh-hans/help",
+    "public_source_count": 52,
+    "source_count_total": 62,
+    "article_count": 983,
+    "article_success_count": 983,
+    "article_failure_count": 0
+  },
+  "output_summary": {
+    "knowledge_domain_counts": {
+      "general_support": 41,
+      "onboarding": 18,
+      "account_security": 33,
+      "asset_ops": 341,
+      "market_announcements": 442,
+      "trading_rules": 55,
+      "terms": 53
+    },
+    "category_counts": {
+      "faq": 128,
+      "announcements": 747,
+      "product-documentation": 55,
+      "terms-of-agreement": 53
+    }
+  }
+}

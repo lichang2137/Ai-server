@@ -1,0 +1,43 @@
+verification_status:
+  - user_id: uid_20001
+    verification_scope: institutional_kyb
+    current_status: material_missing
+    missing_items:
+      - shareholder_register
+      - business_address_proof
+    rejection_reason:
+    next_action: Upload the shareholder register within 12 months and a valid business address proof.
+    eta: 1-3 business days after resubmission
+    case_id: kyb-20260329-001
+    updated_at: 2026-03-29T18:00:00+08:00
+    is_active: true
+deposit_status:
+  - user_id: uid_20001
+    asset: USDT
+    network: TRC20
+    status: pending_confirmations
+    txid: TX1234567890ABCDEF
+    confirmations: "12/20"
+    next_action: Wait for additional on-chain confirmations.
+    updated_at: 2026-03-29T18:10:00+08:00
+    is_active: true
+withdraw_status:
+  - user_id: uid_20001
+    asset: BTC
+    network: Bitcoin
+    status: manual_review
+    txid:
+    review_reason: withdrawal held for risk review
+    next_action: Wait for manual review or contact human support if the SLA is breached.
+    updated_at: 2026-03-29T18:20:00+08:00
+    is_active: true
+network_status:
+  - asset: USDT
+    network: TRC20
+    deposit_enabled: true
+    withdraw_enabled: false
+    announcement_url: https://www.okx.com/zh-hans/help
+    eta: TBD
+    current_status_note: Withdrawals are temporarily suspended for maintenance.
+    updated_at: 2026-03-29T18:30:00+08:00
+    is_active: true

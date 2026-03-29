@@ -1,113 +1,31 @@
-# AI 客服助手 - 产品概述
+# Product Overview
 
-## 1. 产品定义
+## Positioning
 
-**产品名：** Crypto Support MVP
-**形态：** OpenClaw 内部 Demo Agent（第一阶段）；面向客户的 AI 客服产品（第二阶段）
-**一句话定位：** 一个会"理解问题、查状态、找原因、告诉你下一步怎么做"的加密平台支持型 Agent。
+This project is an OpenClaw-installable AI customer-support framework for a single platform operator.
 
-**不是：** FAQ 机器人 / 交易机器人 / 投资建议机器人
+It is not:
 
----
+- a generic exchange support bot
+- a pure FAQ chatbot
+- a final-decision compliance engine
 
-## 2. 支持范围
+It is:
 
-### 平台
-- 第一阶段：OKX / Binance
+- a channel-facing support runtime
+- a platform-package-driven workflow system
+- a live-status-first diagnosis layer with documentation fallback
+- a KYB review assistant that produces human-review recommendations with evidence
 
-### 用户问题类型（四类）
+## Primary user journeys
 
-| 类型 | 用户问法示例 | AI 做什么 |
-|------|------------|---------|
-| 解释型 | "什么是 Memo/Tag？" | 检索知识库并解释 |
-| 查询型 | "ATOM 现在能提现吗？" | 查询平台/币链状态 |
-| 诊断型 | "为什么提币还没到账？" | 排查原因并归因 |
-| 引导型 | "我下一步怎么做？" | 分步引导与资料补全 |
+1. Ask a knowledge question.
+2. Ask for a live or documentation-backed status diagnosis.
+3. Upload KYB documents for structured review.
+4. Escalate to human support with a structured summary.
 
-### 第一阶段目标用户
-1. 新注册/新认证用户（KYC/KYB 问题）
-2. 资产操作用户（充币未到账、提币未到账）
-3. 规则查询用户（费率、网络、参数、公告）
+## Operational model
 
----
-
-## 3. MVP 四大场景（第一阶段必须闭环）
-
-### 场景一：知识问答
-- 币链参数 / 充值提现规则 / 费率 / 钱包维护说明 / KYC 规则
-- 入口最广，开发成本最低
-
-### 场景二：KYB/KYC 资料完整性检查
-- 告诉用户缺什么材料 / 识别退回原因 / 说明每项要求 / 引导下一步
-- 结构化程度高，不碰资金权限
-
-### 场景三：提币未到账排查
-- 定位是哪一笔 / 查平台状态 / 查链上状态 / 归因 / 给建议
-- 用户感知最强，最能体现"是 Agent，不是 FAQ"
-
-### 场景四：钱包/网络状态查询
-- 某币某链能否充提 / 是否维护 / 有无替代网络建议
-- 高频，且可和公告知识库联动
-
----
-
-## 4. 明确不做（第一阶段）
-
-- 不执行交易下单、撤单、划转
-- 不做投资建议
-- 不读取或修改用户账户私有资产
-- 不发起提现、改绑、白名单、API Key 等高风险动作
-- 不替代人工做争议裁决
-- 不承诺链上/对方平台可控结果
-
----
-
-## 5. Agent 核心能力闭环
-
-1. **意图识别** — 判断用户是问知识 / 查状态 / 排查问题 / 要引导 / 要升级
-2. **上下文记忆** — 记住当前会话中的币种、网络、订单号、已排除原因
-3. **槽位补全** — 先从上下文补，再从状态接口查，实在缺字段才最小追问
-4. **工具调用** — 知识库检索 / 公告检索 / 参数查询 / 状态查询 / 诊断规则引擎
-5. **结果解释** — 把技术结果翻译成人话，不甩系统字段
-6. **边界控制** — 高风险场景自动触发人工升级提示
-
----
-
-## 6. 回答格式（固定）
-
-```
-1. 结论
-2. 依据
-3. 下一步
-4. 工单摘要（如有）
-```
-
----
-
-## 7. 体验原则
-
-- **最小追问**：不一次性问所有参数，从上下文自动补全
-- **先结论后解释**：先告诉用户什么情况，再解释为什么
-- **不输出系统字段**：内部字段不暴露给用户
-- **不过度承诺**：用"当前状态显示"/"通常情况下"/"建议先…"等表述
-- **可升级人工**：复杂争议场景必须有转人工/提交工单出口
-
----
-
-## 8. 上线节奏
-
-| 阶段 | 目标 |
-|------|------|
-| Phase 0 | 方案 + 数据梳理 + Prompt 初版 |
-| Phase 1 | OpenClaw Demo 运行，跑通 4 个 MVP 场景 |
-| Phase 2 | 接入真实 KYB/充提/钱包状态接口 |
-| Phase 3 | 嵌入官网/APP，形成面向客户产品 |
-
----
-
-## 9. 成功信号
-
-- 用户愿意用自然语言提问，而不是填表单
-- 多轮对话能减少人工客服介入
-- "知识 + 状态 + 排查 + 引导"能跑通闭环
-- 诊断结果有来源依据，不乱猜
+- OpenClaw owns channels and attachment transport.
+- This service owns workflow routing and domain execution.
+- Platform operators switch products by replacing platform packages and optional adapters.

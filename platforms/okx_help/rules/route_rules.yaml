@@ -1,0 +1,42 @@
+section_route_hints:
+  faq-verification:
+    route: knowledge_qa
+    supports_review: true
+  faq-institutional-onboarding:
+    route: knowledge_qa
+    supports_review: true
+  faq-crypto-deposits:
+    route: status_diagnosis
+    tool: get_deposit_status
+  faq-crypto-withdrawals:
+    route: status_diagnosis
+    tool: get_withdraw_status
+  announcements-deposit-withdrawal-suspension-resumption:
+    route: status_diagnosis
+    tool: get_wallet_network_status
+  faq-account-management-and-security:
+    route: knowledge_qa
+    handoff_on_security: true
+  faq-account-and-wallet-safeguard-measures:
+    route: handoff
+    handoff_on_security: true
+  faq-fraud-prevention:
+    route: handoff
+    handoff_on_security: true
+  terms-of-agreement:
+    route: knowledge_qa
+  product-documentation-risk-management:
+    route: knowledge_qa
+handoff_keywords:
+- 盗号
+- 冻结
+- 被骗
+- 安全风险
+- 身份信息被占用
+- 联系客服
+- 工单
+degrade_rules:
+  status_without_live_adapter: Return documentation-backed guidance and label the
+    answer as non-realtime.
+  ticket_queries_without_ticket_api: Explain how to check the support ticket through
+    OKX help-center guidance.
