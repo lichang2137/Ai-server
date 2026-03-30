@@ -164,4 +164,12 @@ Recommended collaboration model:
 
 This is more reliable than trying to retrofit admin rights onto an app-created base after the fact.
 
+If a shared Bitable already exists and the app has write access, bootstrap the standard OKX tables into that existing base:
+
+```bash
+python scripts/create_okx_feishu_bitable.py --existing-app-token <shared_bitable_app_token> --include-support-tickets
+```
+
+This path is useful when a human operator creates the shared base first and then grants the Feishu app edit permission.
+
 The script writes a local runtime artifact to `var/okx_feishu_bitable_runtime.json` and prints the `OKX_FEISHU_BITABLE_*` env values you should configure locally.

@@ -11,11 +11,11 @@ from app.services.platform_registry import PlatformPackage
 
 def _infer_status_tool(text: str) -> str:
     lowered = (text or "").lower()
-    if any(token in lowered for token in ["kyb", "kyc", "认证", "审核", "补件", "驳回"]):
+    if any(token in lowered for token in ["kyb", "kyc", "认证", "审核", "补件", "驳回", "企业认证"]):
         return "get_kyb_status"
     if any(token in lowered for token in ["提现", "withdraw"]):
         return "get_withdraw_status"
-    if any(token in lowered for token in ["充值", "deposit"]):
+    if any(token in lowered for token in ["充币", "未到账", "deposit"]):
         return "get_deposit_status"
     if any(token in lowered for token in ["钱包", "network", "maintenance"]):
         return "get_wallet_network_status"

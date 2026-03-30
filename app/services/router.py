@@ -15,7 +15,7 @@ STATUS_KEYWORDS = (
     "补件",
     "驳回",
     "提现",
-    "充值",
+    "充币",
     "未到账",
     "还缺",
     "缺什么",
@@ -26,6 +26,7 @@ STATUS_KEYWORDS = (
 )
 STATUS_ENTITY_KEYWORDS = ("kyb", "kyc", "企业认证", "认证")
 HANDOFF_KEYWORDS = ("人工", "客服", "转人工", "complaint", "投诉", "工单")
+STATUS_FOLLOWUP_PHRASES = ("还缺", "缺什么", "审核", "进度", "驳回", "补件")
 
 
 @dataclass
@@ -46,7 +47,7 @@ def route_message(payload: SupportMessageRequest) -> RouteDecision:
     if payload.platform_user_id and any(keyword in lowered for keyword in STATUS_KEYWORDS):
         return RouteDecision(route="status_diagnosis", reason="status_keyword_with_user", risk_level="low")
     if payload.platform_user_id and any(keyword in lowered for keyword in STATUS_ENTITY_KEYWORDS) and any(
-        phrase in lowered for phrase in ("还缺", "缺什么", "审核", "进度", "驳回", "补件")
+        phrase in lowered for phrase in STATUS_FOLLOWUP_PHRASES
     ):
         return RouteDecision(route="status_diagnosis", reason="status_phrase_with_user", risk_level="low")
     if any(keyword in lowered for keyword in KNOWLEDGE_KEYWORDS):

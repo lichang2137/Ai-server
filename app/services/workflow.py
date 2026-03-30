@@ -153,17 +153,18 @@ class WorkflowEngine:
             status = data.get("current_status")
             if status:
                 conclusion = f"Current KYB status: {status}."
+            missing_items = data.get("missing_items") or []
+            if missing_items:
+                evidence.append("missing_items=" + ", ".join(str(item) for item in missing_items))
+            if data.get("next_action"):
+                evidence.append(f"adapter_next_action={data['next_action']}")
             if status == "material_missing":
-                missing_items = ", ".join(
-                    item.get("doc_type", "unknown")
-                    for item in data.get("items", [])
-                    if item.get("status") in {"missing", "rejected"}
-                ) or "see missing items in evidence"
-                next_action = [f"Upload the missing documents and resubmit. Missing items: {missing_items}."]
+                rendered_missing = ", ".join(str(item) for item in missing_items) or "see missing items in evidence"
+                next_action = [data.get("next_action") or f"Upload the missing documents and resubmit. Missing items: {rendered_missing}."]
             elif status in {"pending_review", "in_review"}:
-                next_action = ["Wait for the review window to complete or escalate if the SLA is breached."]
+                next_action = [data.get("next_action") or "Wait for the review window to complete or escalate if the SLA is breached."]
             elif status in {"rejected", "expired"}:
-                next_action = ["Follow up with human support and prepare a corrected resubmission package."]
+                next_action = [data.get("next_action") or "Follow up with human support and prepare a corrected resubmission package."]
                 context.handoff = HandoffPayload(
                     type="status_followup",
                     case_id=f"case-{uuid4().hex[:10]}",
@@ -173,7 +174,7 @@ class WorkflowEngine:
                     suggested_action=next_action[0],
                 )
             elif status == "approved":
-                next_action = ["No further KYB action is required unless a new compliance request is raised."]
+                next_action = [data.get("next_action") or "No further KYB action is required unless a new compliance request is raised."]
 
         context.structured = StructuredReply(conclusion=conclusion, evidence=evidence[:6], next_action=next_action)
 

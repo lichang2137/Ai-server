@@ -83,11 +83,33 @@ class FeishuSetupClient:
             json=payload,
         )
 
+    def get_app(self, app_token: str) -> dict[str, Any]:
+        return self._request(
+            "GET",
+            f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}",
+        )
+
+    def update_app(self, app_token: str, *, name: str | None = None) -> dict[str, Any]:
+        payload: dict[str, Any] = {}
+        if name:
+            payload["name"] = name
+        return self._request(
+            "PUT",
+            f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}",
+            json=payload,
+        )
+
     def create_table(self, app_token: str, table: dict[str, Any]) -> dict[str, Any]:
         return self._request(
             "POST",
             f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables",
             json={"table": table},
+        )
+
+    def list_tables(self, app_token: str) -> dict[str, Any]:
+        return self._request(
+            "GET",
+            f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables",
         )
 
     def batch_create_records(self, app_token: str, table_id: str, records: list[dict[str, Any]]) -> dict[str, Any]:
@@ -172,6 +194,10 @@ def main() -> int:
         default=os.getenv("FEISHU_FOLDER_TOKEN"),
         help="Optional shared Feishu folder token. Use this to create the base in a shared folder both operators manage.",
     )
+    parser.add_argument(
+        "--existing-app-token",
+        help="Use an existing shared Feishu Bitable app token instead of creating a new base.",
+    )
     parser.add_argument("--include-support-tickets", action="store_true")
     parser.add_argument("--output", default=str(Path("var/okx_feishu_bitable_runtime.json")))
     args = parser.parse_args()
@@ -184,9 +210,22 @@ def main() -> int:
     tables = build_tables(schema, seed, include_support_tickets=args.include_support_tickets)
 
     client = FeishuSetupClient(args.app_id, args.app_secret)
-    app_payload = client.create_app(args.name, folder_token=args.folder_token)
-    app_data = app_payload["data"]["app"]
-    app_token = app_data["app_token"]
+    if args.existing_app_token:
+        app_token = args.existing_app_token
+        try:
+            client.update_app(app_token, name=args.name)
+        except Exception:
+            pass
+        app_payload = client.get_app(app_token)
+        app_data = app_payload["data"]["app"]
+    else:
+        app_payload = client.create_app(args.name, folder_token=args.folder_token)
+        app_data = app_payload["data"]["app"]
+        app_token = app_data["app_token"]
+
+    existing_tables = {
+        table["name"]: table["table_id"] for table in client.list_tables(app_token)["data"].get("items", [])
+    }
 
     result: dict[str, Any] = {
         "app": {
@@ -202,10 +241,14 @@ def main() -> int:
     env_lines = [f"OKX_FEISHU_BITABLE_APP_TOKEN={app_token}"]
 
     for table in tables:
-        created = client.create_table(app_token, table["payload"])
-        table_data = created["data"]
-        table_id = table_data["table_id"]
         table_name = table["name"]
+        if table_name in existing_tables:
+            table_id = existing_tables[table_name]
+            table_data = {"table_id": table_id, "default_view_id": None}
+        else:
+            created = client.create_table(app_token, table["payload"])
+            table_data = created["data"]
+            table_id = table_data["table_id"]
         created_records = 0
         field_specs = schema["tables"][table_name]["fields"]
         seed_rows = [_normalize_record(row, field_specs) for row in table["seed_rows"]]
