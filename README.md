@@ -20,6 +20,8 @@ Expected deployment mode:
 
 If OpenClaw is pulling `main`, it is pulling the current supported service version. Do not point OpenClaw at old prototype branches.
 
+If the live status Bitable must be managed by multiple human operators, create it in a shared Feishu folder and bootstrap it with `python scripts/create_okx_feishu_bitable.py --folder-token <shared_folder_token>`. That avoids app-owned permission dead ends later.
+
 OpenClaw is responsible for channel access, message delivery, session passthrough, and attachment passthrough.
 This service is responsible for routing, workflows, knowledge retrieval, live status tools, KYB document review, handoff summaries, and runtime persistence.
 

@@ -68,11 +68,19 @@ class FeishuSetupClient:
             raise last_error
         raise RuntimeError(f"{method} {url} failed without a response payload")
 
-    def create_app(self, name: str, time_zone: str = "Asia/Shanghai") -> dict[str, Any]:
+    def create_app(
+        self,
+        name: str,
+        time_zone: str = "Asia/Shanghai",
+        folder_token: str | None = None,
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {"name": name, "time_zone": time_zone}
+        if folder_token:
+            payload["folder_token"] = folder_token
         return self._request(
             "POST",
             "https://open.feishu.cn/open-apis/bitable/v1/apps",
-            json={"name": name, "time_zone": time_zone},
+            json=payload,
         )
 
     def create_table(self, app_token: str, table: dict[str, Any]) -> dict[str, Any]:
@@ -159,6 +167,11 @@ def main() -> int:
     parser.add_argument("--schema", default=str(Path("platforms/okx_help/schemas/feishu_bitable_tables.yaml")))
     parser.add_argument("--seed", default=str(Path("platforms/okx_help/examples/feishu_bitable_seed.yaml")))
     parser.add_argument("--name", default=f"OKX Support Live Status {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    parser.add_argument(
+        "--folder-token",
+        default=os.getenv("FEISHU_FOLDER_TOKEN"),
+        help="Optional shared Feishu folder token. Use this to create the base in a shared folder both operators manage.",
+    )
     parser.add_argument("--include-support-tickets", action="store_true")
     parser.add_argument("--output", default=str(Path("var/okx_feishu_bitable_runtime.json")))
     args = parser.parse_args()
@@ -171,7 +184,7 @@ def main() -> int:
     tables = build_tables(schema, seed, include_support_tickets=args.include_support_tickets)
 
     client = FeishuSetupClient(args.app_id, args.app_secret)
-    app_payload = client.create_app(args.name)
+    app_payload = client.create_app(args.name, folder_token=args.folder_token)
     app_data = app_payload["data"]["app"]
     app_token = app_data["app_token"]
 
@@ -181,6 +194,7 @@ def main() -> int:
             "app_token": app_token,
             "url": app_data.get("url"),
             "time_zone": app_data.get("time_zone"),
+            "folder_token": args.folder_token,
         },
         "tables": {},
     }

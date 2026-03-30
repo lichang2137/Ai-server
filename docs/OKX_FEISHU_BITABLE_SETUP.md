@@ -148,4 +148,20 @@ Example:
 python scripts/create_okx_feishu_bitable.py --include-support-tickets
 ```
 
+If multiple operators need edit and admin access, do not create the base in an isolated app-owned root location.
+Create or choose a shared Feishu folder first, share that folder with the required operators, then pass its `folder_token`:
+
+```bash
+python scripts/create_okx_feishu_bitable.py --include-support-tickets --folder-token <shared_folder_token>
+```
+
+Recommended collaboration model:
+
+1. Create a shared Feishu folder or shared space.
+2. Add the human operators there with editor or manager rights.
+3. Create the Bitable inside that folder with `--folder-token`.
+4. Use the new `app_token` and table IDs in `.env.local`.
+
+This is more reliable than trying to retrofit admin rights onto an app-created base after the fact.
+
 The script writes a local runtime artifact to `var/okx_feishu_bitable_runtime.json` and prints the `OKX_FEISHU_BITABLE_*` env values you should configure locally.
