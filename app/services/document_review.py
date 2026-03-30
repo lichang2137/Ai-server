@@ -130,7 +130,7 @@ def _extract_image(data: bytes, attachment: Attachment) -> tuple[str, list[Evide
     texts: list[str] = [file_hint] if file_hint else []
     if Image is not None and pytesseract is not None:
         image = Image.open(io.BytesIO(data))
-        ocr_text = _normalize_whitespace(pytesseract.image_to_string(image))
+        ocr_text = _normalize_whitespace(pytesseract.image_to_string(image, lang="eng+chi_sim"))
         if ocr_text:
             texts.append(ocr_text)
     sidecar_text = _load_sidecar_ocr(attachment)
