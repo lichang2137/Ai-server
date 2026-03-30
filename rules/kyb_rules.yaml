@@ -1,66 +1,396 @@
-{
-  "rule_set": "kyb_rules",
-  "version": "0.1.0",
-  "defaults": {
-    "diagnosis": "KYB status requires manual interpretation.",
-    "next_action": "Please review submitted materials and wait for platform review.",
-    "should_escalate": false,
-    "risk_level": "low"
-  },
-  "rules": [
-    {
-      "id": "kyb_approved",
-      "priority": 100,
-      "when": {
-        "current_status": "approved"
-      },
-      "result": {
-        "diagnosis": "KYB has been approved.",
-        "next_action": "No further action needed.",
-        "should_escalate": false,
-        "risk_level": "low"
-      }
-    },
-    {
-      "id": "kyb_material_missing",
-      "priority": 90,
-      "when": {
-        "current_status": "material_missing"
-      },
-      "result": {
-        "diagnosis": "KYB is pending missing documents.",
-        "next_action": "Upload all missing documents and resubmit.",
-        "should_escalate": false,
-        "risk_level": "medium"
-      }
-    },
-    {
-      "id": "kyb_rejected",
-      "priority": 95,
-      "when": {
-        "current_status": "rejected"
-      },
-      "result": {
-        "diagnosis": "KYB was rejected based on document review.",
-        "next_action": "Correct rejected materials and submit a new review request.",
-        "should_escalate": true,
-        "risk_level": "high"
-      }
-    },
-    {
-      "id": "kyb_in_review",
-      "priority": 80,
-      "when": {
-        "current_status": {
-          "in": ["in_review", "pending_review"]
-        }
-      },
-      "result": {
-        "diagnosis": "KYB is currently under review.",
-        "next_action": "Wait for review completion. Prepare documents if follow-up is requested.",
-        "should_escalate": false,
-        "risk_level": "low"
-      }
-    }
-  ]
-}
+rule_set: kyb_rules
+version: 1.0.0
+defaults:
+  route: kyb_review
+  diagnosis: "需要进一步确认用户当前状态。"
+  next_action: "请告知您的企业认证状态，或提供您的账户信息以便查询。"
+  should_escalate: false
+  risk_level: low
+
+# ============================================================
+# PART A：用户尚未开始或进行中 —— 流程引导
+# ============================================================
+
+steps:
+  # ----------------------------------------------------------
+  step_1_select_type:
+    id: step_1_select_type
+    name: 选择机构类型
+    description: 用户不知道自己属于哪类机构，或刚开始认证
+    triggers:
+      - "我要认证企业"
+      - "如何做企业认证"
+      - "怎么申请企业账户"
+      - "从哪里开始"
+      - "我要选什么类型"
+      - "公司认证怎么做"
+    output:
+      heading: "第一步：选择适合您的机构类型"
+      body: |
+        企业认证支持的类型共 8 类：
+
+        | 类型 | 适用场景 |
+        |------|---------|
+        | 私营金融企业 | 货币服务业务、货币传输机构、经纪商、银行等 |
+        | 私营经营公司 | 管道公司、珠宝业务、会计师事务所、进出口业务等 |
+        | 基金管理公司（非国有）| 对冲基金、养老金基金、共同基金、私人投资基金 |
+        | 上市公司 | 在证券交易所上市的公司 |
+        | 国有企业 | 政府持股 50% 及以上的企业或基金 |
+        | 私人投资公司 / 家族办公室 | 用个人财富进行交易/投资/金融交易的实体 |
+        | 非营利组织 | 慈善机构、NGO 等 |
+        | 信托 | 委托受托人管理资产的法律安排 |
+
+        **如何确认自己属于哪类？**
+        查看您的公司注册证书或营业执照上的"公司性质"描述，或参考公司章程。
+
+        确认类型后，告诉我您的选择，我告知您下一步所需的具体材料清单。
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-start-onboarding-as-an-institutional-user"
+
+  # ----------------------------------------------------------
+  step_2_basic_info:
+    id: step_2_basic_info
+    name: 填写基础信息和地址信息
+    description: 用户选择了机构类型，开始填写基础信息
+    triggers:
+      - "填写基础信息"
+      - "地址信息"
+      - "注册地址和营业地址"
+      - "注册号"
+    output:
+      heading: "第二步：填写基础信息和地址信息"
+      body: |
+        这一步需要填写：
+
+        **基础信息**
+        - 公司名称（与注册证书一致）
+        - 营业执照注册号
+        - 成立日期
+        - 注册国家/地区
+
+        **地址信息**
+        - 注册地址
+        - 主要营业地址（如与注册地址不同，需单独提供地址证明）
+
+        **注意：**
+        - 所有信息必须与营业执照完全一致，包括地址格式
+        - 如营业地址与注册地址不同，务必单独准备地址证明文件
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-verify-as-a-privately-owned-operating-company"
+
+  # ----------------------------------------------------------
+  step_3_key_persons:
+    id: step_3_key_persons
+    name: 关键角色 KYC（高管 / UBO / 授权用户）
+    description: 用户需要为高管、最终受益人、授权用户完成身份认证
+    triggers:
+      - "关键角色"
+      - "UBO"
+      - "最终受益人"
+      - "授权用户"
+      - "高管身份证"
+      - "需要哪些人的证件"
+    output:
+      heading: "第三步：关键角色和授权用户身份认证"
+      body: |
+        这一步需要为以下人员提供 KYC 信息：
+
+        **必填人员**
+        - 至少 1 名公司高管（如：CEO、CFO、COO）
+        - UBO（最终受益所有人，即持股 ≥25% 的个人股东）
+        - 授权用户（将操作系统的人）
+
+        **如适用**
+        - 董事（如有）
+        - 合伙人（如公司为合伙企业）
+
+        **每人需提供**
+        - 全名
+        - 居住国家/地区
+        - 详细住址
+        - 出生日期
+        - 国籍
+        - 证件正面 + 背面照片（身份证或护照）
+        - 地址证明（水电费账单、银行月结单等，3个月内）
+
+        **关于地址证明**
+        - 必须显示姓名 + 完整地址 + 日期
+        - 日期须在近 3 个月内
+        - 不接受截图，须为原始文件或 PDF
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-verify-as-a-privately-owned-operating-company"
+
+  # ----------------------------------------------------------
+  step_4_upload_docs:
+    id: step_4_upload_docs
+    name: 上传公司文件
+    description: 用户需要上传公司注册文件
+    triggers:
+      - "上传文件"
+      - "需要哪些文件"
+      - "股权结构图"
+      - "营业执照"
+      - "注册证书"
+      - "组织章程"
+      - "董事名册"
+    output:
+      heading: "第四步：上传公司文件"
+      body: |
+        私营公司认证需要上传以下文件：
+
+        | 文件 | 要求 |
+        |------|------|
+        | 公司注册证书 / 营业执照 | 彩色扫描件或照片，清晰显示所有信息 |
+        | 组织章程大纲及细则 | 完整文件 |
+        | 董事名册 | 需注明日期 |
+        | 股东登记册或股权结构图 | **须在近 12 个月内签字盖章**，不接受过期文件 |
+        | 营业地址证明 | 如地址与注册地址不同 |
+        | 合伙协议 | 仅限合伙企业 |
+        | 开户授权书 | 签字、扫描并上传（董事会决议也可替代） |
+
+        **股权结构图格式要求（最常出问题）**
+        - 须体现所有持股 ≥25% 的个人股东
+        - 如有中间持股公司，须向上穿透至最终个人受益人
+        - 必须有签字 + 盖章 + 日期（近 12 个月内）
+        - 接受 PDF 或图片格式
+
+        **文件通用要求**
+        - 彩色原始文件，不接受截图
+        - 所有角落清晰可见
+        - 无编辑/修图痕迹
+        - 仍在有效期内
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-verify-as-a-privately-owned-operating-company"
+
+  # ----------------------------------------------------------
+  step_5_additional_info:
+    id: step_5_additional_info
+    name: 填写附加信息和同意确认书
+    description: 用户完成前面的步骤后，填写附加信息并签署确认书
+    triggers:
+      - "附加信息"
+      - "确认书"
+      - "同意书"
+      - "还要填什么"
+    output:
+      heading: "第五步：填写附加信息并签署确认书"
+      body: |
+        这一步需要：
+
+        **附加信息**
+        根据机构类型，可能需要补充说明业务性质、资金来源、交易对手方类型等信息，如实填写即可。
+
+        **同意确认书**
+        - 填写并签署开户授权书
+        - 或提供包含相同授权内容的董事会决议
+        - 签字须与之前提供的高管证件签名一致
+
+        **完成后**
+        提交所有材料，等待人工审核。审核结果会发送至账户绑定的邮箱，请留意查收。
+
+        **审核周期**
+        企业认证为人工审核，通常 1-3 个工作日完成，具体以平台通知为准。
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-start-onboarding-as-anstitutional-user"
+
+# ============================================================
+# PART C：认证被退回 —— 修复引导
+# ============================================================
+
+rejection_patterns:
+
+  - id: kyb_rej_001
+    name: 文件缺失
+    diagnosis: "提交的材数不足，缺少必需文件。"
+    common_missing:
+      - "股权结构图 / 股东登记册"
+      - "营业地址证明"
+      - "组织章程"
+      - "董事名册"
+      - "UBO 证件或地址证明"
+      - "授权用户证件"
+    fix:
+      heading: "修复方案：补交缺失文件"
+      body: |
+        您的申请缺少以下材料：
+        [根据查询到的具体缺失项列出]
+
+        **请按以下步骤补交：**
+        1. 登录 OKX 网页端，进入【身份认证】页面
+        2. 找到企业认证申请，点击【补充材料】
+        3. 上传缺失的文件（要求同上一步：彩色原始件、签字盖章、12个月内）
+        4. 确认无误后重新提交
+
+        **上传格式要求回顾：**
+        - 股权结构图：须有签字 + 盖章 + 日期（12个月内）
+        - 地址证明：须显示姓名+地址+日期（3个月内）
+        - 所有文件不接受截图，须为原始彩色扫描件或照片
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-start-onboarding-as-anstitutional-user"
+
+  - id: kyb_rej_002
+    name: 文件无效或不符合要求
+    diagnosis: "提交的文件无效，不符合平台要求。"
+    causes:
+      - "文件已过期（超过有效期）"
+      - "文件不完整（缺少页面）"
+      - "截图或黑白件"
+      - "文件模糊、有遮挡、有修图痕迹"
+      - "股权结构图缺少签字或盖章"
+      - "股权结构图超过12个月"
+    fix:
+      heading: "修复方案：重新准备并上传符合要求的文件"
+      body: |
+        您的材料被退回，原因是文件不符合要求。
+
+        **最常见原因及对应修复方式：**
+
+        1. **股权结构图过期或缺少签字盖章**
+           → 重新准备近 12 个月内的版本，必须有签字 + 盖章
+
+        2. **文件为截图或黑白件**
+           → 须上传彩色原始扫描件或高清照片
+
+        3. **文件模糊 / 不完整**
+           → 重新拍摄或扫描，确保四角完整、无眩光、无遮挡
+
+        4. **地址证明过期**
+           → 准备近 3 个月内的地址证明（水电费账单 / 银行月结单）
+
+        5. **文件与填写信息不一致**
+           → 核对：公司名称、注册号、地址等必须与注册证书一致
+
+        重新准备好后，在【补充材料】入口上传。
+    citation: "https://www.okx.com/zh-hans/help/why-did-my-account-verification-fail"
+
+  - id: kyb_rej_003
+    name: 信息不一致
+    diagnosis: "填写信息与提交文件内容存在不一致。"
+    causes:
+      - "公司名称不一致（注册证书 vs 填写内容）"
+      - "注册地址不匹配"
+      - "高管 / UBO 证件信息与填写内容不符"
+      - "持股比例与股权结构图不符"
+    fix:
+      heading: "修复方案：核对并修正信息"
+      body: |
+        您的材料中存在信息不一致，需要核对修正。
+
+        **核对清单（逐项检查）：**
+
+        - [ ] 公司名称：注册证书上的全称是否与填写内容完全一致？
+        - [ ] 注册号：是否与营业执照一致？
+        - [ ] 注册地址：省/市/区/街道号是否完全一致？
+        - [ ] 高管姓名：是否与证件姓名完全一致（含生僻字）？
+        - [ ] UBO 持股比例：股权结构图与填写是否一致？
+
+        **修正方式：**
+        如发现不一致，需要重新提交修正后的材料。
+        如公司实际情况与填写不符，请通过邮件联系：verification@okx.com
+
+        **说明时请附上：**
+        - 具体不一致的字段
+        - 正确的值
+        - 对应文件名称
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-verify-as-a-privately-owned-operating-company"
+
+  - id: kyb_rej_004
+    name: UBO 问题
+    diagnosis: "最终受益人（UBO）信息存在问题。"
+    causes:
+      - "UBO 持股不足 25%（低于平台要求）"
+      - "UBO 为法人实体而非个人（需向上穿透）"
+      - "UBO 证件未提供或已过期"
+      - "UBO 地址证明缺失或过期"
+    fix:
+      heading: "修复方案：完善 UBO 信息"
+      body: |
+        您的最终受益所有人（UBO）材料需要补充或修正。
+
+        **OKX 对 UBO 的要求：**
+        - 持股 ≥25% 的个人股东须被披露
+        - 如持股人中间有公司实体，须继续向上穿透至最终个人受益人
+        - UBO 须提供：证件正反面 + 近 3 个月内地址证明
+
+        **请按以下步骤确认：**
+        1. 列出所有持股 ≥25% 的个人股东
+        2. 如某股东是公司实体（如 BVI 公司），继续向上穿透
+        3. 准备每位 UBO 的：身份证/护照 + 地址证明
+        4. 重新出具股权结构图，注明每位 UBO 的持股比例
+        5. 在补充材料入口重新上传
+
+        如 UBO 持股低于 25%，请提供书面说明（如适用），并通过 verification@okx.com 提交。
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-know-what-my-institution-type-is"
+
+  - id: kyb_rej_005
+    name: 授权书问题
+    diagnosis: "开户授权书不符合要求。"
+    causes:
+      - "授权书缺少签字"
+      - "授权书未盖章"
+      - "授权书与高管证件签名不一致"
+      - "授权书过期"
+      - "以普通文件代替授权书"
+    fix:
+      heading: "修复方案：重新签署并上传授权书"
+      body: |
+        您的授权书需要重新准备。
+
+        **OKX 接受的授权书形式（任选其一）：**
+        1. OKX 标准开户授权书（签字 + 盖章）
+        2. 包含同等授权内容的董事会决议（须体现：授权人、被授权人、授权范围、决议日期、签字）
+
+        **签字要求：**
+        - 须与前面步骤提交的高管证件上的签名一致
+        - 不接受电子打印签名，须为手写签字或受控电子签名
+
+        **盖章要求：**
+        - 须为公司公章，不接受合同章/财务章
+
+        **重新签署后：**
+        彩色扫描，保存为 PDF 或高清图片，在补充材料入口上传。
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-start-onboarding-as-institutional-user"
+
+  - id: kyb_rej_006
+    name: 无法核实 / 人工判断不通过
+    diagnosis: "因合规或人工审查判断，无法通过本次认证申请。"
+    causes:
+      - "平台合规政策限制"
+      - "机构类型与平台服务范围不匹配"
+      - "其他合规原因（无法披露）"
+    fix:
+      heading: "当前情况及可选方案"
+      body: |
+        您的企业认证申请经人工审核后未通过。
+
+        **如需了解具体原因，可通过以下方式咨询：**
+        发送邮件至：verification@okx.com
+        邮件内容建议包含：
+        - 您的 OKX 账户注册邮箱
+        - 公司名称
+        - 具体想要确认的问题
+
+        **如希望重新申请：**
+        企业认证每个主体只能注册一个账户。如原账户有特殊原因（如企业结构变更），建议通过上述邮件说明情况，由专员判断是否可以重新开启认证流程。
+
+        **注意：**
+        请勿尝试通过创建新账户绕过原申请，此行为可能违反平台用户协议，并导致新账户同样被限制。
+    citation: "https://www.okx.com/zh-hans/help/how-do-i-start-onboarding-as-institutional-user"
+    should_escalate: true
+    risk_level: high
+
+# ============================================================
+# 状态归因表（快速查询用）
+# ============================================================
+
+status_map:
+  approved:
+    diagnosis: "企业认证已通过。"
+    next_action: "您的企业认证已完成，所有功能已解锁。如有其他问题，欢迎随时咨询。"
+
+  in_review:
+    diagnosis: "企业认证正在审核中。"
+    next_action: "审核周期通常为 1-3 个工作日，请留意账户绑定邮箱的通知。"
+
+  material_missing:
+    diagnosis: "材料缺失，需要补充。"
+    next_action: "请登录网页端【身份认证】页面查看具体缺失项，按要求补充后重新提交。"
+
+  rejected:
+    diagnosis: "企业认证未通过，需要重新处理。"
+    next_action: "请告知您收到的退回原因（材料问题/信息不一致/其他），我帮您对症处理。"
+    should_escalate: false
